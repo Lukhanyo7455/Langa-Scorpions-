@@ -138,8 +138,10 @@ export default function HomePage() {
         <div className="container-app text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Your support builds the team.</h2>
           <p className="text-lg text-white/90 mb-8">
-            R500 covers a month of transport for one athlete. R2 500 sponsors gear for the whole practice.
-            Every rand goes back into our young people.
+            Right now, our athletes need <strong className="text-white">sports energy drinks</strong> to fuel every game and training session,
+            <strong className="text-white"> team apparel</strong> to wear the badge with pride, and
+            <strong className="text-white"> new wheelchairs and equipment</strong> so no one is left on the sidelines.
+            Every rand you give goes straight to the court.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link to="/donate" className="btn-primary-solid" data-testid="cta-donate-btn">Donate now</Link>
