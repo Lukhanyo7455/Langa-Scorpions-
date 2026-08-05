@@ -4,7 +4,7 @@ import { PublicLayout } from "@/components/PublicLayout";
 import { api } from "@/lib/api";
 import { ArrowRight, Heart, Trophy, Users, HandHeart, Sparkles, Quote, Calendar, Hexagon, Circle, Diamond, Square } from "lucide-react";
 
-const HERO_IMG = "https://images.unsplash.com/photo-1778432999383-8e241a3c91f0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
+const HERO_IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/1m64lh18_683848679_17860667106686930_4862815288554787130_n.jpg";
 const PROGRAM_IMG = "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
 
 export default function HomePage() {
@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="relative overflow-hidden" data-testid="home-hero">
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="Wheelchair basketball athletes competing on an outdoor court" className="w-full h-full object-cover" />
+          <img src={HERO_IMG} alt="The Langa Scorpions team celebrating on the court" className="w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/50" />
         </div>
         <div className="container-app relative py-28 md:py-40 lg:py-48 text-white animate-fade-up">
