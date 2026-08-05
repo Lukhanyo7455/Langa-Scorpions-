@@ -11,7 +11,7 @@ const VALUES = [
 
 const TEAM = [
   { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
-  { name: "Coach Bongani Zulu", role: "Head Coach — Wheelchair Basketball" },
+  { name: "Ralph Reynolds", role: "Head Coach — Wheelchair Basketball" },
   { name: "Lerato Khumalo", role: "Athlete Welfare & Family Liaison" },
   { name: "David Peters", role: "Board Chairperson" },
   { name: "Dr. Amina Patel", role: "Board Member — Medical Advisor" },
