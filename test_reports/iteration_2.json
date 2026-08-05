@@ -1,0 +1,42 @@
+{
+  "summary": "Tested three new Langa Scorpions features (sponsor wall, object-storage image uploads, live Stripe checkout). All 11 backend pytest cases passed. Full frontend flow verified: home sponsor wall renders, admin sponsors CMS CRUD works end-to-end via UI, gallery uploader posts to /api/admin/upload and populates full backend-prefixed /api/files/... URL (stories & sponsors logo uploaders also present with correct testids), donate pay-by-card without name/email shows toast then with details redirects to https://checkout.stripe.com, /donate/success?session_id=fake_id renders data-testid='donate-success' without crashing. Regression: pledge POST /api/public/donations still returns {status:pledged}; public home endpoints (settings, stories, impact, sponsors) all 200.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AdminPages CmsPage row rendering",
+        "issue": "Row primary label used `row.title || row.caption || row.image_url` — sponsor documents have `name`, so /admin/sponsors list rendered visually blank rows (Edit/Delete visible but no name/tier). FIXED by including row.name/row.tier/row.website in the fallback chain.",
+        "selector": "[data-testid='cms-sponsors'] .p-4",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_features.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py public_sponsors sorts by created_at asc only; consider tier-priority ordering for the wall (currently frontend groups client-side which works).",
+    "CmsPage row template mixes many resource fields into one fallback chain — brittle; consider a per-CmsPage `renderRow` callback for clarity. Sponsors bug was a symptom of this pattern.",
+    "server.py is ~790 lines and mixes auth, CRUD, storage proxy, and Stripe — approaching the 700-line split guideline; consider splitting into routers/ (auth, admin, public, storage, payments).",
+    "donation_status reconciles Stripe on every non-paid poll (unauthenticated endpoint) — acceptable for MVP but could be abused; add rate-limiting or session-ownership check later.",
+    "CORS allow_origins defaults to '*' with allow_credentials=True — browsers will reject credentialed requests against wildcard; in production set explicit origins."
+  ],
+  "updated_files": [
+    "/app/frontend/src/pages/admin/AdminPages.jsx",
+    "/app/backend/tests/test_features.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin@langascorpions.org / ScorpionsAdmin2026! (verified working)",
+  "seed_data_creation": "Backend seeds 6 sponsors on startup (Cape Town Community Trust, Rainbow Foundation, Ubuntu Grants, Langa Local FC, Table Mountain Motors, Southern Sun Sports). All test-created TEST_* sponsors were deleted at end of tests.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iteration_2 verified all three new features end-to-end. One minor display bug in AdminPages.jsx CmsPage row rendering was fixed inline (sponsor name/tier now appears in list). Stripe checkout uses Flow B with sk_test_emergent and correctly redirects to checkout.stripe.com. Object storage upload returns {storage_path, url} where url starts with /api/files/... and frontend ImageUploader prefixes REACT_APP_BACKEND_URL. Poll endpoint /api/public/donations/status/{sid} reconciles paid sessions into donations collection.",
+  "rca of the issue": "Bug: /admin/sponsors list rows appeared blank. RCA: CmsPage in AdminPages.jsx uses a shared fallback expression `row.title || row.caption || row.image_url` for the row primary label. Sponsor documents have no title/caption/image_url — the primary field is `name`. So all sponsor rows rendered empty strings. Reproduction: log in as admin -> /admin/sponsors -> list shows 8 rows with Edit/Delete but no visible name. Mitigation applied: extended the fallback chain to include row.name (and secondary line now includes row.tier/row.website). Verified fix by re-rendering after refresh — 'Cape Town Community Trust / headline' now renders correctly."
+}

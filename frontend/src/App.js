@@ -11,6 +11,7 @@ import StoriesPage from "@/pages/StoriesPage";
 import EventsPage from "@/pages/EventsPage";
 import GalleryPage from "@/pages/GalleryPage";
 import DonatePage from "@/pages/DonatePage";
+import DonateSuccessPage from "@/pages/DonateSuccessPage";
 import RegisterAthletePage from "@/pages/RegisterAthletePage";
 import VolunteerPage from "@/pages/VolunteerPage";
 import ContactPage from "@/pages/ContactPage";
@@ -20,7 +21,7 @@ import {
   AdminGuard, AdminLayout, AdminOverview,
   AdminDonations, AdminAthletes, AdminVolunteers,
   AdminMessages, AdminNewsletter,
-  AdminEvents, AdminStories, AdminGallery,
+  AdminEvents, AdminStories, AdminGallery, AdminSponsors,
 } from "@/pages/admin/AdminPages";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/donate" element={<DonatePage />} />
+            <Route path="/donate/success" element={<DonateSuccessPage />} />
             <Route path="/register" element={<RegisterAthletePage />} />
             <Route path="/volunteer" element={<VolunteerPage />} />
             <Route path="/contact" element={<ContactPage />} />
@@ -52,6 +54,7 @@ function App() {
               <Route path="events" element={<AdminEvents />} />
               <Route path="stories" element={<AdminStories />} />
               <Route path="gallery" element={<AdminGallery />} />
+              <Route path="sponsors" element={<AdminSponsors />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -6,20 +6,26 @@ load_dotenv(ROOT_DIR / ".env")
 
 import os
 import logging
+import uuid
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List, Literal, Annotated
 
 import bcrypt
 import jwt
+import requests
 from bson import ObjectId
 from bson.errors import InvalidId
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query, UploadFile, File, Header
 from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
 from starlette.middleware.cors import CORSMiddleware
 import io
 import csv
+
+from emergentintegrations.payments.stripe.checkout import (
+    StripeCheckout, CheckoutSessionRequest, CheckoutSessionResponse, CheckoutStatusResponse,
+)
 
 # ---------- Setup ----------
 MONGO_URL = os.environ["MONGO_URL"]
@@ -29,6 +35,60 @@ ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@langascorpions.org")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "changeme")
 ORG_EMAIL = os.environ.get("ORG_EMAIL", "info@langascorpions.org")
 ORG_WHATSAPP = os.environ.get("ORG_WHATSAPP", "+27000000000")
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY", "sk_test_emergent")
+
+# Object storage
+STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+APP_NAME = "langa-scorpions"
+_storage_key: Optional[str] = None
+
+def init_storage(force: bool = False) -> Optional[str]:
+    global _storage_key
+    if _storage_key and not force:
+        return _storage_key
+    if not EMERGENT_LLM_KEY:
+        return None
+    try:
+        r = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_LLM_KEY}, timeout=30)
+        r.raise_for_status()
+        _storage_key = r.json()["storage_key"]
+        return _storage_key
+    except Exception as e:
+        logging.getLogger("langa").warning("Storage init failed: %s", e)
+        return None
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    key = init_storage()
+    if not key:
+        raise HTTPException(503, "Storage not available")
+    r = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data, timeout=120,
+    )
+    if r.status_code == 404:
+        # stale key — force refresh once
+        key = init_storage(force=True)
+        r = requests.put(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": key, "Content-Type": content_type},
+            data=data, timeout=120,
+        )
+    r.raise_for_status()
+    return r.json()
+
+def get_object(path: str):
+    key = init_storage()
+    if not key:
+        raise HTTPException(503, "Storage not available")
+    r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    if r.status_code == 404:
+        key = init_storage(force=True)
+        r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    r.raise_for_status()
+    return r.content, r.headers.get("Content-Type", "application/octet-stream")
 
 JWT_ALG = "HS256"
 
@@ -175,6 +235,20 @@ class SettingsIn(BaseModel):
     instagram_url: Optional[str] = None
     address: Optional[str] = None
 
+class SponsorIn(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+    tier: Literal["headline", "partner", "grant", "community"] = "partner"
+    website: Optional[str] = None
+    logo_url: Optional[str] = None
+    published: bool = True
+
+class DonateCheckoutIn(BaseModel):
+    amount: float = Field(gt=0)
+    donor_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    frequency: Literal["one-time"] = "one-time"  # subscriptions require price IDs — one-time only for v1
+    origin_url: str
+
 # ---------- Startup ----------
 @app.on_event("startup")
 async def on_startup():
@@ -183,6 +257,9 @@ async def on_startup():
     await db.events.create_index("starts_at")
     await db.stories.create_index("created_at")
     await db.gallery.create_index("created_at")
+
+    # Warm object storage session (best-effort)
+    init_storage()
 
     # Idempotent admin seed
     existing = await db.users.find_one({"email": ADMIN_EMAIL})
@@ -260,6 +337,16 @@ async def on_startup():
             {"caption": "Community open day with volunteers",
              "image_url": "https://images.unsplash.com/photo-1774557937044-a9a970042796?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHw0fHxjb21tdW5pdHklMjBzcG9ydHMlMjB2b2x1bnRlZXJ8ZW58MHx8fHwxNzg1OTY4MDExfDA&ixlib=rb-4.1.0&q=85",
              "source": "external", "published": True, "created_at": now_iso()},
+        ])
+
+    if await db.sponsors.count_documents({}) == 0:
+        await db.sponsors.insert_many([
+            {"name": "Cape Town Community Trust", "tier": "headline", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
+            {"name": "Rainbow Foundation", "tier": "partner", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
+            {"name": "Ubuntu Grants", "tier": "grant", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
+            {"name": "Langa Local FC", "tier": "community", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
+            {"name": "Table Mountain Motors", "tier": "partner", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
+            {"name": "Southern Sun Sports", "tier": "partner", "website": "https://example.org", "logo_url": None, "published": True, "created_at": now_iso()},
         ])
 
 # ---------- Auth Routes ----------
@@ -520,6 +607,176 @@ async def export_csv(kind: str, admin=Depends(get_current_admin)):
     return _csv_stream(rows, fields, f"{kind}.csv")
 
 # ---------- Register ----------
+# ---- Sponsors ----
+@api.get("/public/sponsors")
+async def public_sponsors():
+    docs = await db.sponsors.find({"published": True}).sort("created_at", 1).to_list(200)
+    return [doc_to_out(d) for d in docs]
+
+@api.get("/admin/sponsors")
+async def admin_sponsors(admin=Depends(get_current_admin)):
+    return await _list("sponsors", sort_field="created_at", direction=1)
+
+@api.post("/admin/sponsors")
+async def create_sponsor(payload: SponsorIn, admin=Depends(get_current_admin)):
+    doc = payload.model_dump()
+    doc["created_at"] = now_iso()
+    r = await db.sponsors.insert_one(doc)
+    return {"id": str(r.inserted_id)}
+
+@api.put("/admin/sponsors/{sid}")
+async def update_sponsor(sid: str, payload: SponsorIn, admin=Depends(get_current_admin)):
+    await db.sponsors.update_one({"_id": _oid(sid)}, {"$set": payload.model_dump()})
+    return {"ok": True}
+
+@api.delete("/admin/sponsors/{sid}")
+async def delete_sponsor(sid: str, admin=Depends(get_current_admin)):
+    await db.sponsors.delete_one({"_id": _oid(sid)})
+    return {"ok": True}
+
+# ---- File uploads (admin only) ----
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB
+
+@api.post("/admin/upload")
+async def upload_image(file: UploadFile = File(...), admin=Depends(get_current_admin)):
+    ctype = (file.content_type or "").lower()
+    if ctype not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(400, f"Unsupported image type: {ctype}")
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(400, "Image exceeds 8MB limit")
+    ext = (file.filename or "img").rsplit(".", 1)[-1].lower() if "." in (file.filename or "") else "jpg"
+    ext = ext if ext in {"jpg", "jpeg", "png", "webp", "gif"} else "jpg"
+    path = f"{APP_NAME}/uploads/{admin['id']}/{uuid.uuid4()}.{ext}"
+    result = put_object(path, data, ctype)
+    rec = {
+        "storage_path": result["path"],
+        "original_filename": file.filename,
+        "content_type": ctype,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "created_at": now_iso(),
+    }
+    await db.files.insert_one(rec)
+    return {"storage_path": result["path"], "url": f"/api/files/{result['path']}"}
+
+@api.get("/files/{storage_path:path}")
+async def serve_file(storage_path: str):
+    rec = await db.files.find_one({"storage_path": storage_path, "is_deleted": False})
+    if not rec:
+        raise HTTPException(404, "File not found")
+    data, ctype = get_object(storage_path)
+    return Response(
+        content=data,
+        media_type=rec.get("content_type", ctype),
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
+
+# ---- Stripe donations ----
+_payments_col = db.payment_transactions
+
+@api.post("/public/donations/checkout")
+async def create_donation_checkout(payload: DonateCheckoutIn, request: Request):
+    if not STRIPE_API_KEY:
+        raise HTTPException(500, "Stripe not configured")
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url.rstrip('/')}/api/webhook/stripe"
+    checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    origin = payload.origin_url.rstrip("/")
+    session_req = CheckoutSessionRequest(
+        amount=float(payload.amount),
+        currency="zar",
+        success_url=f"{origin}/donate/success?session_id={{CHECKOUT_SESSION_ID}}",
+        cancel_url=f"{origin}/donate?cancelled=1",
+        metadata={
+            "donor_name": payload.donor_name or "",
+            "email": payload.email or "",
+            "frequency": payload.frequency,
+        },
+    )
+    session = await checkout.create_checkout_session(session_req)
+    await _payments_col.insert_one({
+        "session_id": session.session_id,
+        "donor_name": payload.donor_name,
+        "email": payload.email,
+        "amount": float(payload.amount),
+        "currency": "ZAR",
+        "frequency": payload.frequency,
+        "status": "initiated",
+        "payment_status": "pending",
+        "created_at": now_iso(),
+        "updated_at": now_iso(),
+    })
+    return {"checkout_url": session.url, "session_id": session.session_id}
+
+@api.get("/public/donations/status/{session_id}")
+async def donation_status(session_id: str):
+    rec = await _payments_col.find_one({"session_id": session_id})
+    if not rec:
+        raise HTTPException(404, "Not found")
+    # Try to reconcile via Stripe if still pending
+    if rec.get("payment_status") != "paid":
+        try:
+            checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+            status: CheckoutStatusResponse = await checkout.get_checkout_status(session_id)
+            if status.payment_status == "paid" or status.status == "complete":
+                await _payments_col.update_one(
+                    {"session_id": session_id, "payment_status": {"$ne": "paid"}},
+                    {"$set": {"status": "completed", "payment_status": "paid", "updated_at": now_iso()}},
+                )
+                # Mirror into donations collection for admin
+                await db.donations.insert_one({
+                    "donor_name": rec.get("donor_name") or "Stripe donor",
+                    "email": rec.get("email") or "",
+                    "amount": rec.get("amount", 0),
+                    "currency": rec.get("currency", "ZAR"),
+                    "frequency": rec.get("frequency", "one-time"),
+                    "message": "",
+                    "phone": None,
+                    "status": "paid",
+                    "session_id": session_id,
+                    "created_at": now_iso(),
+                })
+                rec = await _payments_col.find_one({"session_id": session_id})
+        except Exception as e:
+            logger.warning("Stripe reconcile failed: %s", e)
+    return {"session_id": rec["session_id"], "status": rec["status"], "payment_status": rec["payment_status"], "amount": rec.get("amount", 0)}
+
+@api.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    if not STRIPE_API_KEY:
+        raise HTTPException(500, "Stripe not configured")
+    body = await request.body()
+    sig = request.headers.get("Stripe-Signature", "")
+    try:
+        checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        resp = await checkout.handle_webhook(body, sig)
+    except Exception as e:
+        logger.warning("Webhook error: %s", e)
+        raise HTTPException(400, "Invalid webhook")
+    if resp.session_id and resp.payment_status == "paid":
+        result = await _payments_col.update_one(
+            {"session_id": resp.session_id, "payment_status": {"$ne": "paid"}},
+            {"$set": {"status": "completed", "payment_status": "paid", "updated_at": now_iso()}},
+        )
+        if result.modified_count:
+            rec = await _payments_col.find_one({"session_id": resp.session_id})
+            if rec:
+                await db.donations.insert_one({
+                    "donor_name": rec.get("donor_name") or "Stripe donor",
+                    "email": rec.get("email") or (resp.metadata or {}).get("email", ""),
+                    "amount": rec.get("amount", 0),
+                    "currency": rec.get("currency", "ZAR"),
+                    "frequency": rec.get("frequency", "one-time"),
+                    "message": "",
+                    "phone": None,
+                    "status": "paid",
+                    "session_id": resp.session_id,
+                    "created_at": now_iso(),
+                })
+    return {"ok": True}
+
 app.include_router(api)
 
 app.add_middleware(

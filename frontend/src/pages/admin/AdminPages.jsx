@@ -3,7 +3,8 @@ import { Link, NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api, API_BASE } from "@/lib/api";
 import { toast } from "sonner";
-import { LayoutDashboard, HandCoins, Users, HandHeart, Mail, Newspaper, Image, Calendar, Send, LogOut, Download } from "lucide-react";
+import { LayoutDashboard, HandCoins, Users, HandHeart, Mail, Newspaper, Image, Calendar, Send, LogOut, Download, Award } from "lucide-react";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export function AdminGuard({ children }) {
   const { admin, loading } = useAuth();
@@ -22,6 +23,7 @@ const NAV = [
   { to: "/admin/events", label: "Events", icon: Calendar },
   { to: "/admin/stories", label: "Stories", icon: Newspaper },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
+  { to: "/admin/sponsors", label: "Sponsors", icon: Award },
 ];
 
 export function AdminLayout() {
@@ -272,6 +274,21 @@ function CmsPage({ title, endpoint, fields, initial, dataTestId, itemLabel }) {
                 <input type="checkbox" checked={!!form[f.name]} onChange={(e) => setForm({ ...form, [f.name]: e.target.checked })} data-testid={`${dataTestId}-${f.name}`} />
                 <span className="text-sm text-foreground/80">{f.checkboxLabel || "Published"}</span>
               </label>
+            ) : f.type === "image" ? (
+              <div className="space-y-2">
+                <input type="text" placeholder="Paste image URL or upload below"
+                  value={form[f.name] || ""} onChange={(e) => setForm({ ...form, [f.name]: e.target.value })}
+                  className={inp} data-testid={`${dataTestId}-${f.name}`} />
+                <div className="flex items-center gap-3 flex-wrap">
+                  <ImageUploader
+                    testid={`${dataTestId}-${f.name}-uploader`}
+                    onUploaded={(url) => setForm({ ...form, [f.name]: url })}
+                  />
+                  {form[f.name] && (
+                    <img src={form[f.name]} alt="preview" className="h-14 rounded border border-border object-cover" />
+                  )}
+                </div>
+              </div>
             ) : (
               <input type={f.type || "text"} value={form[f.name] || ""} onChange={(e) => setForm({ ...form, [f.name]: e.target.value })} className={inp} data-testid={`${dataTestId}-${f.name}`} />
             )}
@@ -294,8 +311,8 @@ function CmsPage({ title, endpoint, fields, initial, dataTestId, itemLabel }) {
         {items.map((row) => (
           <div key={row.id} className="p-4 flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <div className="font-semibold text-primary">{row.title || row.caption || row.image_url}</div>
-              <div className="text-sm text-muted-foreground truncate">{row.subtitle || row.description || row.location || row.athlete_name}</div>
+              <div className="font-semibold text-primary">{row.title || row.name || row.caption || row.image_url || "(untitled)"}</div>
+              <div className="text-sm text-muted-foreground truncate">{row.subtitle || row.tier || row.website || row.description || row.location || row.athlete_name}</div>
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => edit(row)} className="text-primary hover:text-accent text-sm font-semibold" data-testid={`${dataTestId}-edit-${row.id}`}>Edit</button>
@@ -331,7 +348,7 @@ export const AdminStories = () => (
       { name: "title", label: "Title" },
       { name: "subtitle", label: "Subtitle" },
       { name: "athlete_name", label: "Athlete name" },
-      { name: "image_url", label: "Image URL (Facebook / external)" },
+      { name: "image_url", label: "Photo", type: "image" },
       { name: "body", label: "Body", type: "textarea", rows: 8 },
       { name: "published", label: "", type: "checkbox" },
     ]}
@@ -341,11 +358,25 @@ export const AdminStories = () => (
 export const AdminGallery = () => (
   <CmsPage
     title="Gallery" endpoint="/admin/gallery" dataTestId="cms-gallery" itemLabel="image"
-    initial={{ caption: "", image_url: "", source: "external", published: true }}
+    initial={{ caption: "", image_url: "", source: "upload", published: true }}
     fields={[
-      { name: "image_url", label: "Image URL" },
+      { name: "image_url", label: "Photo", type: "image" },
       { name: "caption", label: "Caption" },
       { name: "source", label: "Source", type: "select", options: ["upload", "facebook", "external"] },
+      { name: "published", label: "", type: "checkbox" },
+    ]}
+  />
+);
+
+export const AdminSponsors = () => (
+  <CmsPage
+    title="Sponsors &amp; partners" endpoint="/admin/sponsors" dataTestId="cms-sponsors" itemLabel="sponsor"
+    initial={{ name: "", tier: "partner", website: "", logo_url: "", published: true }}
+    fields={[
+      { name: "name", label: "Sponsor / partner name" },
+      { name: "tier", label: "Tier", type: "select", options: ["headline", "partner", "grant", "community"] },
+      { name: "website", label: "Website URL" },
+      { name: "logo_url", label: "Logo (optional — an icon will be used if empty)", type: "image" },
       { name: "published", label: "", type: "checkbox" },
     ]}
   />

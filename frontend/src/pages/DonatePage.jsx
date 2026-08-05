@@ -15,6 +15,25 @@ export default function DonatePage() {
 
   const finalAmount = custom ? parseFloat(custom) : amount;
 
+  const payWithCard = async () => {
+    if (!finalAmount || finalAmount <= 0) { toast.error("Please enter a donation amount."); return; }
+    if (!form.donor_name || !form.email) { toast.error("Please fill in your name and email first."); return; }
+    setLoading(true);
+    try {
+      const { data } = await api.post("/public/donations/checkout", {
+        amount: finalAmount,
+        donor_name: form.donor_name,
+        email: form.email,
+        frequency: "one-time",
+        origin_url: window.location.origin,
+      });
+      window.location.href = data.checkout_url;
+    } catch (err) {
+      toast.error(formatApiError(err.response?.data?.detail) || "Payment could not start.");
+      setLoading(false);
+    }
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     if (!finalAmount || finalAmount <= 0) { toast.error("Please enter a donation amount."); return; }
@@ -126,11 +145,20 @@ export default function DonatePage() {
                 />
               </div>
 
-              <button type="submit" disabled={loading} className="btn-accent w-full !py-4 text-base" data-testid="donate-submit">
-                <Heart className="w-4 h-4" /> {loading ? "Sending…" : `Pledge R${(finalAmount || 0).toLocaleString()} ${frequency === "monthly" ? "/ month" : ""}`}
-              </button>
+              <div className="grid md:grid-cols-2 gap-3 pt-2">
+                <button
+                  type="button" onClick={payWithCard} disabled={loading}
+                  className="btn-accent w-full !py-4 text-base"
+                  data-testid="donate-pay-card"
+                >
+                  <Heart className="w-4 h-4" /> {loading ? "Redirecting…" : `Pay R${(finalAmount || 0).toLocaleString()} by card`}
+                </button>
+                <button type="submit" disabled={loading} className="btn-outline-primary w-full !py-4 text-base" data-testid="donate-submit">
+                  {loading ? "Sending…" : "Pledge (contact me)"}
+                </button>
+              </div>
               <p className="text-xs text-muted-foreground text-center">
-                We&apos;ll email you with payment instructions (EFT / Stripe once live). Your details are kept private.
+                Card payments are securely processed by Stripe. Prefer EFT or need an invoice? Use pledge — we&apos;ll be in touch.
               </p>
             </form>
           </div>

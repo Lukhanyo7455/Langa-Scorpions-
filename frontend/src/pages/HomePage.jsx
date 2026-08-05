@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PublicLayout } from "@/components/PublicLayout";
 import { api } from "@/lib/api";
-import { ArrowRight, Heart, Trophy, Users, HandHeart, Sparkles, Quote, Calendar } from "lucide-react";
+import { ArrowRight, Heart, Trophy, Users, HandHeart, Sparkles, Quote, Calendar, Hexagon, Circle, Diamond, Square } from "lucide-react";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1778432999383-8e241a3c91f0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
 const PROGRAM_IMG = "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
@@ -11,11 +11,13 @@ export default function HomePage() {
   const [impact, setImpact] = useState({ athletes: 24, volunteers: 18, programs: 1, events_upcoming: 3 });
   const [stories, setStories] = useState([]);
   const [events, setEvents] = useState([]);
+  const [sponsors, setSponsors] = useState([]);
 
   useEffect(() => {
     api.get("/public/impact").then((r) => setImpact(r.data)).catch(() => {});
     api.get("/public/stories").then((r) => setStories(r.data.slice(0, 2))).catch(() => {});
     api.get("/public/events").then((r) => setEvents(r.data.slice(0, 3))).catch(() => {});
+    api.get("/public/sponsors").then((r) => setSponsors(r.data)).catch(() => {});
   }, []);
 
   return (
@@ -145,6 +147,66 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* SPONSORS */}
+      {sponsors.length > 0 && (
+        <section className="section-pad" data-testid="home-sponsors">
+          <div className="container-app">
+            <div className="text-center mb-12">
+              <div className="eyebrow mb-3">Our partners &amp; sponsors</div>
+              <h2 className="text-4xl md:text-5xl font-bold text-primary">In this together.</h2>
+              <p className="text-foreground/70 mt-4 max-w-xl mx-auto">
+                The organizations and grantors making Scorpions possible — season after season.
+              </p>
+            </div>
+            <SponsorGrid sponsors={sponsors} />
+          </div>
+        </section>
+      )}
     </PublicLayout>
+  );
+}
+
+const TIER_ICONS = { headline: Diamond, partner: Hexagon, grant: Square, community: Circle };
+const TIER_LABEL = { headline: "Headline sponsor", partner: "Partner", grant: "Grant funder", community: "Community" };
+
+function SponsorGrid({ sponsors }) {
+  const grouped = sponsors.reduce((acc, s) => {
+    (acc[s.tier] = acc[s.tier] || []).push(s);
+    return acc;
+  }, {});
+  const order = ["headline", "partner", "grant", "community"];
+  return (
+    <div className="space-y-8">
+      {order.filter((t) => grouped[t]?.length).map((tier) => {
+        const Icon = TIER_ICONS[tier];
+        return (
+          <div key={tier}>
+            <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4 text-center">
+              {TIER_LABEL[tier]}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {grouped[tier].map((s) => (
+                <a
+                  key={s.id}
+                  href={s.website || "#"}
+                  target={s.website ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="card-soft p-6 text-center hover:shadow-md transition-shadow duration-200"
+                  data-testid={`sponsor-${s.id}`}
+                >
+                  {s.logo_url ? (
+                    <img src={s.logo_url} alt={s.name} className="h-14 mx-auto mb-3 object-contain" />
+                  ) : (
+                    <Icon className="w-8 h-8 mx-auto mb-3 text-accent" strokeWidth={1.5} />
+                  )}
+                  <div className="font-heading font-bold text-primary tracking-wide">{s.name}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
