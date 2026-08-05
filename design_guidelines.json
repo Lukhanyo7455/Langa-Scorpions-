@@ -1,0 +1,121 @@
+{
+  "theme": "light",
+  "design_philosophy": "Warm, uplifting, and human-centered. We aim to evoke energy and inclusion through bold hopeful colors (deep green and warm orange) paired with generous breathing room (clean whites) and impactful, accessible typography.",
+  "colors": {
+    "primary": {
+      "DEFAULT": "#0B4F3A",
+      "50": "#E6F4F0",
+      "100": "#C2E4D9",
+      "500": "#0B4F3A",
+      "700": "#083B2B",
+      "900": "#042017",
+      "foreground": "#FFFFFF"
+    },
+    "accent": {
+      "DEFAULT": "#FF7B40",
+      "50": "#FFF0E8",
+      "100": "#FFD9C6",
+      "500": "#FF7B40",
+      "700": "#CC5926",
+      "900": "#7A3517",
+      "foreground": "#FFFFFF"
+    },
+    "background": "#FAF9F6",
+    "surface": "#FFFFFF",
+    "foreground": "#1F2937",
+    "muted": {
+      "DEFAULT": "#F3F4F6",
+      "foreground": "#6B7280"
+    },
+    "border": "#E5E7EB",
+    "admin": {
+      "background": "#F9FAFB",
+      "sidebar": "#FFFFFF",
+      "surface": "#FFFFFF",
+      "border": "#E5E7EB"
+    }
+  },
+  "typography": {
+    "heading_font": "Outfit, sans-serif",
+    "body_font": "DM Sans, sans-serif",
+    "scale": {
+      "h1": "text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-primary-900",
+      "h2": "text-4xl sm:text-5xl font-bold tracking-tight text-primary-900",
+      "h3": "text-2xl sm:text-3xl font-semibold text-primary-900",
+      "h4": "text-xl sm:text-2xl font-medium text-foreground",
+      "body_lg": "text-lg text-foreground/80 leading-relaxed",
+      "body": "text-base text-foreground/80 leading-relaxed",
+      "small": "text-sm text-muted-foreground uppercase tracking-wider font-semibold"
+    },
+    "guidelines": [
+      "Avoid Inter/Roboto completely. Use Outfit for a distinct, energetic punch on headings, and DM Sans for highly accessible body text.",
+      "Ensure heading line-heights are tight (leading-tight) and body line-heights are relaxed (leading-relaxed) for maximum legibility.",
+      "Never center-align long blocks of text; keep paragraphs left-aligned."
+    ]
+  },
+  "layouts": {
+    "marketing": {
+      "hero": "Full-bleed or split-screen structure. If using full-bleed background image, apply bg-black/40 overlay to ensure text contrast meets WCAG AA. Left-aligned massive typography with two distinct CTAs (Primary Accent for 'Donate', Outline/White for 'Volunteer').",
+      "bento_programs": "Tetris Grid (Mode A). grid-cols-1 md:grid-cols-12 gap-6 or gap-8. Span logic: Hero component col-span-12 lg:col-span-8, supporting components col-span-12 lg:col-span-4.",
+      "spacing": "Generous. Use py-20, py-24, or py-32 for section padding. Containers must breathe.",
+      "navigation": "Sticky crystal glass header: bg-white/80 backdrop-blur-md border-b border-white/20. No completely transparent headers over content."
+    },
+    "admin": {
+      "structure": "Sidebar navigation (w-64) + Main content area. High Density Grid (Mode B) for dashboard widgets.",
+      "widgets": "Flat white surfaces (bg-white), subtle border-border/60, rounded-xl, no heavy shadows. Strict data hierarchy.",
+      "spacing": "Tight and functional. p-6 for cards, gap-4 for grids."
+    }
+  },
+  "components": {
+    "buttons": {
+      "marketing": "Pill-shaped (rounded-full), bold px-8 py-4. Accent color for primary CTAs to drive action (Donate, Register). Add subtle hover transforms (-translate-y-0.5) and shadow.",
+      "admin": "Standard rounding (rounded-md), px-4 py-2. Function-first, solid primary or muted secondary."
+    },
+    "cards": {
+      "marketing": "Soft corners (rounded-3xl), bg-white, subtle ambient shadow (shadow-sm). Use generous internal padding (p-8 to p-12).",
+      "admin": "Crisp corners (rounded-xl), 1px solid border, flat."
+    },
+    "forms": "Use Shadcn UI customized to match the brand. Input fields should have rounded-lg borders, focus:ring-2 focus:ring-accent.",
+    "sponsors": "Instead of placeholder images, use stylized typography (e.g., 'font-serif text-2xl font-bold tracking-widest text-muted-foreground') paired with Lucide icons (Hexagon, Circle) to represent sponsor logos gracefully."
+  },
+  "images": {
+    "hero_action": {
+      "url": "https://images.unsplash.com/photo-1778432999383-8e241a3c91f0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Wheelchair basketball players competing outdoors - energetic, dynamic.",
+      "alt": "Wheelchair basketball athletes competing on an outdoor court"
+    },
+    "program_spotlight": {
+      "url": "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Group of people playing basketball on court.",
+      "alt": "Group of adaptive athletes playing basketball"
+    },
+    "athlete_portrait": {
+      "url": "https://images.unsplash.com/photo-1776705865123-f58d0ec06653?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwyfHxkaXNhYmxlZCUyMGF0aGxldGUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Close-up portrait of a young athlete, capturing emotion and humanity.",
+      "alt": "Portrait of a confident young athlete"
+    },
+    "volunteer_community": {
+      "url": "https://images.unsplash.com/photo-1774557937044-a9a970042796?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHw0fHxjb21tdW5pdHklMjBzcG9ydHMlMjB2b2x1bnRlZXJ8ZW58MHx8fHwxNzg1OTY4MDExfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Community sports event with volunteers and participants.",
+      "alt": "Community sports volunteers interacting with runners"
+    }
+  },
+  "accessibility": {
+    "contrast": "Strict WCAG AA minimum. Use APCA contrast tools to ensure dark text on warm orange or deep green backgrounds remains legible. If using text over images, mandate text-shadow and a dark/light semi-transparent underlay.",
+    "keyboard": "Ensure clear focus states (focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent) for all interactive elements.",
+    "motion": "Respect prefers-reduced-motion. Animations should be subtle (opacity fades, slight Y-axis shifts).",
+    "structure": "Maintain a strictly semantic HTML hierarchy (H1 -> H2 -> H3). Use proper aria-labels on icon-only buttons."
+  },
+  "testing": {
+    "attributes": "All interactive and key informational elements MUST include a data-testid attribute formatted as kebab-case and role-based (e.g., data-testid='donate-submit-button')."
+  },
+  "universal_guidelines_for_main_agent": [
+    "Do not use generic centered layouts or simplistic gradients. Create depth via layered elements and z-index hierarchy.",
+    "Do not use AI assistant Emoji characters (like 🤖🧠) for icons. Use lucide-react.",
+    "All interactions need micro-animations (hover states, subtle scale, color transition).",
+    "Never apply universal transition (transition: all). Target specific properties.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Use sonner for toast notifications.",
+    "Never use placeholder text or placeholder image URLs for missing content. Use stylized text or lucide icons if no image is available."
+  ]
+}
