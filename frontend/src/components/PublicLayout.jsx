@@ -37,22 +37,22 @@ export const PublicLayout = ({ children }) => {
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-nav" data-testid="site-header">
-        <div className="container-app flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3 group" data-testid="nav-logo">
+        <div className="container-app flex items-center justify-between h-24 md:h-28">
+          <Link to="/" className="flex items-center gap-4 group" data-testid="nav-logo">
             {settings.logo_url ? (
               <img
                 src={settings.logo_url}
                 alt="Langa Scorpions logo"
-                className="w-11 h-11 rounded-2xl object-cover shadow-sm transition-transform duration-200 group-hover:-rotate-6"
+                className="w-14 h-14 md:w-20 md:h-20 rounded-2xl object-contain shadow-sm transition-transform duration-200 group-hover:-rotate-6"
               />
             ) : (
-              <div className="w-11 h-11 rounded-2xl bg-primary text-white grid place-items-center font-heading font-bold text-lg shadow-sm transition-transform duration-200 group-hover:-rotate-6">
+              <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-primary text-white grid place-items-center font-heading font-bold text-xl md:text-2xl shadow-sm transition-transform duration-200 group-hover:-rotate-6">
                 LS
               </div>
             )}
             <div className="leading-tight">
-              <div className="font-heading font-bold text-primary text-lg">Langa Scorpions</div>
-              <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Adaptive Sports</div>
+              <div className="font-heading font-bold text-primary text-xl md:text-2xl">Langa Scorpions</div>
+              <div className="text-xs md:text-sm font-semibold uppercase tracking-widest text-accent">Adaptive Sports and Development</div>
             </div>
           </Link>
 
@@ -127,15 +127,15 @@ export const PublicLayout = ({ children }) => {
       <footer className="bg-primary text-white/90 mt-24" data-testid="site-footer">
         <div className="container-app py-16 grid gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-4 mb-4">
               {settings.logo_url ? (
-                <img src={settings.logo_url} alt="Langa Scorpions logo" className="w-12 h-12 rounded-2xl object-cover" />
+                <img src={settings.logo_url} alt="Langa Scorpions logo" className="w-16 h-16 rounded-2xl object-contain bg-white/10 p-1" />
               ) : (
-                <div className="w-12 h-12 rounded-2xl bg-accent grid place-items-center font-bold text-lg">LS</div>
+                <div className="w-16 h-16 rounded-2xl bg-accent grid place-items-center font-bold text-xl">LS</div>
               )}
               <div>
-                <div className="font-heading font-bold text-xl">Langa Scorpions</div>
-                <div className="text-xs uppercase tracking-widest text-white/60">Adaptive Sports &amp; Development</div>
+                <div className="font-heading font-bold text-2xl">Langa Scorpions</div>
+                <div className="text-xs uppercase tracking-widest text-accent font-semibold">Adaptive Sports and Development</div>
               </div>
             </div>
             <p className="text-white/70 max-w-md leading-relaxed">
@@ -190,7 +190,7 @@ export const PublicLayout = ({ children }) => {
         </div>
         <div className="border-t border-white/10">
           <div className="container-app py-6 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-white/60 gap-2">
-            <div>© {new Date().getFullYear()} Langa Scorpions Adaptive Sports & Development. All rights reserved.</div>
+            <div>© {new Date().getFullYear()} Langa Scorpions Adaptive Sports and Development. All rights reserved.</div>
             <div>Made with heart in Langa, Cape Town.</div>
           </div>
         </div>
