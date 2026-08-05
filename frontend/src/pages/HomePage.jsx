@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { ArrowRight, Heart, Trophy, Users, HandHeart, Sparkles, Quote, Calendar, Hexagon, Circle, Diamond, Square } from "lucide-react";
 
 const HERO_IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/1m64lh18_683848679_17860667106686930_4862815288554787130_n.jpg";
-const PROGRAM_IMG = "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
+const PROGRAM_IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/yuqr3b92_656264907_122107481589255555_5368127788220121279_n-2.webp";
 
 export default function HomePage() {
   const [impact, setImpact] = useState({ athletes: 24, volunteers: 18, programs: 1, events_upcoming: 3 });
@@ -80,7 +80,7 @@ export default function HomePage() {
         <div className="container-app grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7">
             <div className="rounded-3xl overflow-hidden shadow-2xl">
-              <img src={PROGRAM_IMG} alt="Group of adaptive athletes playing basketball" className="w-full h-full object-cover aspect-[4/3]" />
+              <img src={PROGRAM_IMG} alt="Langa Scorpions celebrating with the championship trophy" className="w-full h-full object-cover aspect-[4/3]" />
             </div>
           </div>
           <div className="lg:col-span-5">
