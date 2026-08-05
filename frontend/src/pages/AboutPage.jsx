@@ -10,7 +10,7 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Lukhanyo Mdunyelwa", role: "Founder & Program Director" },
+  { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
   { name: "Coach Bongani Zulu", role: "Head Coach — Wheelchair Basketball" },
   { name: "Lerato Khumalo", role: "Athlete Welfare & Family Liaison" },
   { name: "David Peters", role: "Board Chairperson" },
