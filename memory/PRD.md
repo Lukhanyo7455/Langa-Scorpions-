@@ -29,13 +29,20 @@ manage content, view registrations, and export data.
 - Placeholder content seeded: 3 events, 2 athlete stories, 3 gallery items, org settings.
 - Testing agent iteration 1: 100% backend + 100% frontend pass.
 
+## Implemented (2026-02-06 — Round 2)
+- **Sponsor Wall** on home page grouped by tier (headline, partner, grant, community) with Lucide icon fallback for missing logos. Backend seeds 6 partners.
+- **Admin Sponsors CMS**: full CRUD with tier selector + logo upload. Row list fixed to show sponsor name/tier.
+- **Object Storage image uploads**: reusable `ImageUploader` component wired into Gallery, Stories, and Sponsors admin forms. Backend endpoint `/api/admin/upload` (8MB limit, JPG/PNG/WebP/GIF only, admin-only) + public `/api/files/{path}` streaming with 24h cache.
+- **Live Stripe donations (Flow B, test mode)**: `/api/public/donations/checkout` creates a Stripe session; frontend redirects to `checkout.stripe.com`. `/donate/success` polls `/api/public/donations/status/{sid}` and mirrors paid sessions into the `donations` collection so the admin CSV export includes them. Webhook wired at `/api/webhook/stripe`. Pledge flow (contact-me) preserved as second CTA.
+- Testing agent iteration 2: 100% backend + 100% frontend pass. Minor CmsPage row-render bug found & fixed by testing agent.
+
 ## Deferred / Backlog
-- **P0**: Live Stripe checkout for donations (user selected "Skip for now" alongside Stripe). Currently donations are captured as pledges. Backend has a clear insertion point in POST /api/public/donations.
+- **P1**: Claim a real Stripe account for South African donations. Stripe's Emergent-managed sandbox does not support `ZA` — the app currently uses the platform test key. To go live: user must sign up at stripe.com and set `STRIPE_API_KEY` to their live key, OR wire in PayFast/Yoco for local SA payments.
 - **P1**: Transactional email confirmations (Resend) for donation pledges, registrations, contact acknowledgments.
-- **P1**: Object Storage for admin-side image uploads (currently URL-only for gallery/stories).
+- **P1**: Recurring / monthly donations (requires Stripe Price IDs + subscription mode — currently one-time only).
 - **P2**: PayFast / Yoco (SA-local payments), PayPal.
 - **P2**: Multi-language support (isiXhosa, Afrikaans).
-- **P2**: Athlete portal with training resources; coach app; WhatsApp integration (Twilio); merchandise store; grant/report tools.
+- **P2**: Athlete portal, coach app, WhatsApp integration, merchandise store.
 
 ## Test Credentials
 See `/app/memory/test_credentials.md`.
