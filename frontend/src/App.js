@@ -1,55 +1,62 @@
-import { useEffect } from "react";
+import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { Toaster } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { AuthProvider } from "@/context/AuthContext";
+import HomePage from "@/pages/HomePage";
+import AboutPage from "@/pages/AboutPage";
+import ProgramsPage from "@/pages/ProgramsPage";
+import StoriesPage from "@/pages/StoriesPage";
+import EventsPage from "@/pages/EventsPage";
+import GalleryPage from "@/pages/GalleryPage";
+import DonatePage from "@/pages/DonatePage";
+import RegisterAthletePage from "@/pages/RegisterAthletePage";
+import VolunteerPage from "@/pages/VolunteerPage";
+import ContactPage from "@/pages/ContactPage";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import {
+  AdminGuard, AdminLayout, AdminOverview,
+  AdminDonations, AdminAthletes, AdminVolunteers,
+  AdminMessages, AdminNewsletter,
+  AdminEvents, AdminStories, AdminGallery,
+} from "@/pages/admin/AdminPages";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <Toaster position="top-center" richColors closeButton />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/programs" element={<ProgramsPage />} />
+            <Route path="/stories" element={<StoriesPage />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/donate" element={<DonatePage />} />
+            <Route path="/register" element={<RegisterAthletePage />} />
+            <Route path="/volunteer" element={<VolunteerPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+              <Route index element={<AdminOverview />} />
+              <Route path="donations" element={<AdminDonations />} />
+              <Route path="athletes" element={<AdminAthletes />} />
+              <Route path="volunteers" element={<AdminVolunteers />} />
+              <Route path="messages" element={<AdminMessages />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="stories" element={<AdminStories />} />
+              <Route path="gallery" element={<AdminGallery />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </AuthProvider>
   );
 }
 
