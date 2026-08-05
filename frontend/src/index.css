@@ -6,30 +6,30 @@
 
 @layer base {
   :root {
-    --background: 45 27% 97%;          /* #FAF9F6 cream */
-    --foreground: 220 14% 15%;         /* deep charcoal */
+    --background: 0 0% 100%;           /* pure white */
+    --foreground: 0 0% 8%;             /* near-black text */
     --card: 0 0% 100%;
-    --card-foreground: 220 14% 15%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 14% 15%;
-    --primary: 158 76% 18%;            /* deep green #0B4F3A */
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 8%;                /* black #141414 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 45 27% 94%;
-    --secondary-foreground: 158 76% 18%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 42%;
-    --accent: 19 100% 63%;             /* warm orange #FF7B40 */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 353 74% 42%;             /* crimson red #B91C2C */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 19 100% 63%;
-    --chart-1: 158 76% 18%;
-    --chart-2: 19 100% 63%;
-    --chart-3: 45 90% 60%;
-    --chart-4: 200 60% 40%;
-    --chart-5: 280 50% 55%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 353 74% 42%;
+    --chart-1: 353 74% 42%;
+    --chart-2: 0 0% 8%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 353 60% 60%;
+    --chart-5: 0 0% 30%;
     --radius: 0.75rem;
   }
 }
@@ -41,7 +41,7 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
   h1, h2, h3, h4, h5, h6 { @apply font-heading tracking-tight; }
-  ::selection { background-color: #FF7B40; color: white; }
+  ::selection { background-color: #B91C2C; color: white; }
 }
 
 @layer utilities {
