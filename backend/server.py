@@ -405,7 +405,7 @@ async def public_impact():
         donations_total += float(d.get("amount", 0) or 0)
     events_upcoming = await db.events.count_documents({"published": True})
     return {
-        "athletes": max(athletes, 24),
+        "athletes": max(athletes, 30),
         "volunteers": max(volunteers, 18),
         "donations_total": donations_total,
         "programs": 1,

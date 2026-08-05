@@ -60,7 +60,7 @@ export default function HomePage() {
         <div className="container-app">
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { icon: Users, label: "Athletes in program", value: impact.athletes },
+              { icon: Users, label: "Athletes in program", value: `${Math.max(impact.athletes || 0, 30)}+` },
               { icon: HandHeart, label: "Active volunteers", value: impact.volunteers },
               { icon: Trophy, label: "Programs running", value: impact.programs },
               { icon: Calendar, label: "Upcoming events", value: impact.events_upcoming },
