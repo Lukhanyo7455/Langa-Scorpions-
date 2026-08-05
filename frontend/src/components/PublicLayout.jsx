@@ -39,9 +39,17 @@ export const PublicLayout = ({ children }) => {
       <header className="sticky top-0 z-40 glass-nav" data-testid="site-header">
         <div className="container-app flex items-center justify-between h-20">
           <Link to="/" className="flex items-center gap-3 group" data-testid="nav-logo">
-            <div className="w-11 h-11 rounded-2xl bg-primary text-white grid place-items-center font-heading font-bold text-lg shadow-sm transition-transform duration-200 group-hover:-rotate-6">
-              LS
-            </div>
+            {settings.logo_url ? (
+              <img
+                src={settings.logo_url}
+                alt="Langa Scorpions logo"
+                className="w-11 h-11 rounded-2xl object-cover shadow-sm transition-transform duration-200 group-hover:-rotate-6"
+              />
+            ) : (
+              <div className="w-11 h-11 rounded-2xl bg-primary text-white grid place-items-center font-heading font-bold text-lg shadow-sm transition-transform duration-200 group-hover:-rotate-6">
+                LS
+              </div>
+            )}
             <div className="leading-tight">
               <div className="font-heading font-bold text-primary text-lg">Langa Scorpions</div>
               <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Adaptive Sports</div>
@@ -120,7 +128,11 @@ export const PublicLayout = ({ children }) => {
         <div className="container-app py-16 grid gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-accent grid place-items-center font-bold text-lg">LS</div>
+              {settings.logo_url ? (
+                <img src={settings.logo_url} alt="Langa Scorpions logo" className="w-12 h-12 rounded-2xl object-cover" />
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-accent grid place-items-center font-bold text-lg">LS</div>
+              )}
               <div>
                 <div className="font-heading font-bold text-xl">Langa Scorpions</div>
                 <div className="text-xs uppercase tracking-widest text-white/60">Adaptive Sports &amp; Development</div>

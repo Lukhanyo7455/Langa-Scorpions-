@@ -3,7 +3,7 @@ import { Link, NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api, API_BASE } from "@/lib/api";
 import { toast } from "sonner";
-import { LayoutDashboard, HandCoins, Users, HandHeart, Mail, Newspaper, Image, Calendar, Send, LogOut, Download, Award } from "lucide-react";
+import { LayoutDashboard, HandCoins, Users, HandHeart, Mail, Newspaper, Image, Calendar, Send, LogOut, Download, Award, Settings as SettingsIcon } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
 
 export function AdminGuard({ children }) {
@@ -24,6 +24,7 @@ const NAV = [
   { to: "/admin/stories", label: "Stories", icon: Newspaper },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/sponsors", label: "Sponsors", icon: Award },
+  { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 export function AdminLayout() {
@@ -381,3 +382,95 @@ export const AdminSponsors = () => (
     ]}
   />
 );
+
+export function AdminSettings() {
+  const [form, setForm] = useState({
+    mission: "", tagline: "", org_email: "", whatsapp: "",
+    facebook_url: "", instagram_url: "", address: "", logo_url: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api.get("/public/settings")
+      .then((r) => setForm((f) => ({ ...f, ...r.data })))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const save = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await api.put("/admin/settings", form);
+      toast.success("Settings saved");
+    } catch { toast.error("Save failed"); }
+    finally { setBusy(false); }
+  };
+
+  const inp = "w-full px-3 py-2 rounded-lg border border-border focus:border-accent focus:ring-2 focus:ring-accent/30 outline-none text-sm";
+
+  if (loading) return <div className="text-muted-foreground">Loading…</div>;
+
+  return (
+    <div data-testid="admin-settings">
+      <h1 className="text-3xl font-heading font-bold text-primary mb-2">Site settings</h1>
+      <p className="text-muted-foreground mb-8">These appear on the public site — logo, mission, contact info, socials.</p>
+
+      <form onSubmit={save} className="bg-white rounded-xl border border-border p-6 grid gap-5 max-w-3xl" data-testid="settings-form">
+        <div>
+          <label className="block text-sm font-semibold text-primary mb-2">Organization logo</label>
+          <div className="flex items-center gap-4">
+            {form.logo_url ? (
+              <img src={form.logo_url} alt="logo" className="w-16 h-16 rounded-2xl object-cover border border-border" />
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-primary text-white grid place-items-center font-heading font-bold text-xl">LS</div>
+            )}
+            <div className="flex flex-col gap-2">
+              <ImageUploader testid="settings-logo-uploader" onUploaded={(url) => setForm({ ...form, logo_url: url })} />
+              {form.logo_url && (
+                <button type="button" onClick={() => setForm({ ...form, logo_url: "" })} className="text-xs text-destructive font-semibold self-start" data-testid="settings-logo-remove">
+                  Remove logo (use LS tile)
+                </button>
+              )}
+            </div>
+          </div>
+          <input type="text" placeholder="Or paste a logo URL" value={form.logo_url || ""} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} className={inp + " mt-3"} data-testid="settings-logo-url" />
+        </div>
+
+        <SField label="Tagline" value={form.tagline} onChange={(v) => setForm({ ...form, tagline: v })} testid="settings-tagline" />
+        <SArea label="Mission" value={form.mission} onChange={(v) => setForm({ ...form, mission: v })} testid="settings-mission" rows={4} />
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <SField label="Contact email" value={form.org_email} onChange={(v) => setForm({ ...form, org_email: v })} testid="settings-email" />
+          <SField label="WhatsApp number" value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} testid="settings-whatsapp" />
+          <SField label="Facebook URL" value={form.facebook_url} onChange={(v) => setForm({ ...form, facebook_url: v })} testid="settings-facebook" />
+          <SField label="Instagram URL" value={form.instagram_url} onChange={(v) => setForm({ ...form, instagram_url: v })} testid="settings-instagram" />
+        </div>
+        <SField label="Physical address" value={form.address} onChange={(v) => setForm({ ...form, address: v })} testid="settings-address" />
+
+        <button type="submit" disabled={busy} className="btn-pill bg-accent text-white px-6 py-2.5 text-sm hover:bg-accent-700 justify-self-start" data-testid="settings-save">
+          {busy ? "Saving…" : "Save settings"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+const _sInp = "w-full px-3 py-2 rounded-lg border border-border focus:border-accent focus:ring-2 focus:ring-accent/30 outline-none text-sm";
+function SField({ label, value, onChange, testid }) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-primary mb-1">{label}</label>
+      <input value={value || ""} onChange={(e) => onChange(e.target.value)} className={_sInp} data-testid={testid} />
+    </div>
+  );
+}
+function SArea({ label, value, onChange, testid, rows = 4 }) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-primary mb-1">{label}</label>
+      <textarea rows={rows} value={value || ""} onChange={(e) => onChange(e.target.value)} className={_sInp} data-testid={testid} />
+    </div>
+  );
+}

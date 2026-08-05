@@ -21,7 +21,7 @@ import {
   AdminGuard, AdminLayout, AdminOverview,
   AdminDonations, AdminAthletes, AdminVolunteers,
   AdminMessages, AdminNewsletter,
-  AdminEvents, AdminStories, AdminGallery, AdminSponsors,
+  AdminEvents, AdminStories, AdminGallery, AdminSponsors, AdminSettings,
 } from "@/pages/admin/AdminPages";
 
 function App() {
@@ -55,6 +55,7 @@ function App() {
               <Route path="stories" element={<AdminStories />} />
               <Route path="gallery" element={<AdminGallery />} />
               <Route path="sponsors" element={<AdminSponsors />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -234,6 +234,7 @@ class SettingsIn(BaseModel):
     facebook_url: Optional[str] = None
     instagram_url: Optional[str] = None
     address: Optional[str] = None
+    logo_url: Optional[str] = None
 
 class SponsorIn(BaseModel):
     name: str = Field(min_length=1, max_length=120)
