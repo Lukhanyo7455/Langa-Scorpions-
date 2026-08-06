@@ -11,13 +11,11 @@ const VALUES = [
 
 const TEAM = [
   { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
-  { name: "Rebecca Cullum", role: "Strength & Conditioning · Women's Team Head Coach" },
-  { name: "Ralph Reynolds", role: "Men's Team Head Coach" },
+  { name: "Charisma Van Eck", role: "Administrative Coordinator" },
+  { name: "Ralph Reynolds", role: "Head Coach — Men's Team (Wheelchair Basketball)" },
+  { name: "Rebecca Cullum", role: "Strength & Conditioning · Head Coach — Women's Team (Wheelchair Basketball)" },
   { name: "Ralph Williams", role: "Assistant Coach" },
-  { name: "Lerato Khumalo", role: "Administrative Coordinator" },
-  { name: "David Peters", role: "Board Chairperson" },
-  { name: "Dr. Amina Patel", role: "Board Member — Medical Advisor" },
-  { name: "Sipho Ndlovu", role: "Board Member — Community" },
+  { name: "Yolanda Dlakhulu", role: "Assistant Coach — Women's Team (Wheelchair Basketball)" },
 ];
 
 export default function AboutPage() {
@@ -56,8 +54,8 @@ export default function AboutPage() {
 
       <section className="section-pad bg-primary text-white" data-testid="about-team">
         <div className="container-app">
-          <div className="eyebrow !text-accent mb-3">Our team &amp; board</div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-10">People who show up.</h2>
+          <div className="eyebrow !text-accent mb-3">Our team</div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-10">Our Team</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {TEAM.map((p) => (
               <div key={p.name} className="rounded-2xl border border-white/15 p-6 bg-white/5">
