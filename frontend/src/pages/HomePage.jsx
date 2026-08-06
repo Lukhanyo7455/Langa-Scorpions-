@@ -118,7 +118,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-8">
             {stories.map((s) => (
               <article key={s.id} className="card-soft overflow-hidden" data-testid={`story-card-${s.id}`}>
-                {s.image_url && <img src={s.image_url} alt={s.athlete_name || s.title} className="w-full aspect-[4/3] object-cover" />}
+                {s.image_url && <img src={s.image_url} alt={s.athlete_name || s.title} className="w-full aspect-[4/3] object-contain bg-white" />}
                 <div className="p-8">
                   <div className="eyebrow mb-3">{s.athlete_name}</div>
                   <h3 className="text-2xl font-bold text-primary mb-2">{s.title}</h3>

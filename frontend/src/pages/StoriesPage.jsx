@@ -26,7 +26,7 @@ export default function StoriesPage() {
         <div className="container-app grid md:grid-cols-2 gap-8">
           {stories.map((s, i) => (
             <article key={s.id} className="card-soft overflow-hidden animate-fade-up" style={{ animationDelay: `${i * 60}ms` }} data-testid={`story-${s.id}`}>
-              {s.image_url && <img src={s.image_url} alt={s.athlete_name || s.title} className="w-full aspect-[4/3] object-cover" />}
+              {s.image_url && <img src={s.image_url} alt={s.athlete_name || s.title} className="w-full aspect-[4/3] object-contain bg-white" />}
               <div className="p-8">
                 <div className="eyebrow mb-3">{s.athlete_name}</div>
                 <h2 className="text-2xl font-bold text-primary mb-2">{s.title}</h2>
