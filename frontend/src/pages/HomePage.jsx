@@ -188,14 +188,14 @@ function SponsorGrid({ sponsors }) {
             <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4 text-center">
               {TIER_LABEL[tier]}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               {grouped[tier].map((s) => (
                 <a
                   key={s.id}
                   href={s.website || "#"}
                   target={s.website ? "_blank" : undefined}
                   rel="noreferrer"
-                  className="card-soft p-6 text-center hover:shadow-md transition-shadow duration-200"
+                  className="card-soft p-6 text-center hover:shadow-md transition-shadow duration-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.75rem)] lg:w-[calc(25%-0.75rem)] max-w-xs"
                   data-testid={`sponsor-${s.id}`}
                 >
                   {s.logo_url ? (
