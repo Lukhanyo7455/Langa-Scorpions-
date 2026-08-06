@@ -6,7 +6,7 @@ import { Check, ArrowRight, Clock, MapPin } from "lucide-react";
 const IMG = "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
 
 const INCLUDED = [
-  "Two structured practices per week (Tuesday &amp; Saturday)",
+  "Structured practices",
   "Provided sports wheelchairs — no equipment needed to start",
   "Certified coaching in adaptive basketball fundamentals",
   "Strength &amp; conditioning tailored to each athlete",
@@ -70,10 +70,9 @@ export default function ProgramsPage() {
         <div className="container-app">
           <div className="eyebrow !text-accent mb-3">Weekly schedule</div>
           <h2 className="text-4xl md:text-5xl font-bold mb-8">When we train.</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-1 gap-6 max-w-xl">
             {[
-              { day: "Tuesdays", time: "17:30 – 19:30", loc: "Langa Community Sports Hall" },
-              { day: "Saturdays", time: "09:00 – 12:00", loc: "Langa Community Sports Hall" },
+              { day: "Sundays", time: "16:00 – 19:00", loc: "Langa Community Sports Hall" },
             ].map((s) => (
               <div key={s.day} className="rounded-2xl border border-white/15 p-8 bg-white/5">
                 <div className="text-2xl font-bold mb-3">{s.day}</div>
