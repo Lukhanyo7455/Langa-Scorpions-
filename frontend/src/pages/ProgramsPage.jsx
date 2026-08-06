@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Check, ArrowRight, Clock, MapPin } from "lucide-react";
 
-const IMG = "https://images.unsplash.com/photo-1679306352618-136e6fdfd450?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHx3aGVlbGNoYWlyJTIwYmFza2V0YmFsbHxlbnwwfHx8fDE3ODU5NjgwMTF8MA&ixlib=rb-4.1.0&q=85";
+const IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/x7lgbcdq_753812518_4144571109168312_4658145872786109362_n.webp";
 
 const INCLUDED = [
   "Structured practices",
@@ -39,7 +39,7 @@ export default function ProgramsPage() {
           </div>
           <div className="lg:col-span-6">
             <div className="rounded-3xl overflow-hidden shadow-xl">
-              <img src={IMG} alt="Wheelchair basketball training session" className="w-full aspect-[4/3] object-cover" />
+              <img src={IMG} alt="Langa Scorpions team celebrating in their red-and-black kit at the community sports hall" className="w-full aspect-[4/3] object-cover" />
             </div>
           </div>
         </div>
