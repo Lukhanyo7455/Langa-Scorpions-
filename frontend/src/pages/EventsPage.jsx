@@ -89,18 +89,24 @@ export default function EventsPage() {
 
         {/* Disclaimer */}
         <div className="container-app mt-10">
-          <div className="rounded-2xl border-2 border-dashed border-accent/30 bg-accent/5 p-6 md:p-10 text-center" data-testid="events-disclaimer">
+          <div className="relative overflow-hidden rounded-3xl bg-primary p-8 md:p-12 text-center" data-testid="events-disclaimer">
+            {/* red accent bars */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-accent" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-accent" aria-hidden="true" />
+            {/* subtle red glow */}
+            <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
+
             {settings.logo_url && (
               <img
                 src={settings.logo_url}
                 alt="Langa Scorpions"
-                className="w-16 h-16 md:w-20 md:h-20 object-contain mx-auto mb-4 drop-shadow-sm"
+                className="relative w-16 h-16 md:w-20 md:h-20 object-contain mx-auto mb-4 bg-white rounded-2xl p-2 drop-shadow-lg"
               />
             )}
-            <div className="inline-flex items-center gap-2 text-accent font-semibold text-sm uppercase tracking-widest mb-2">
+            <div className="relative inline-flex items-center gap-2 text-accent font-bold text-sm uppercase tracking-[0.22em] mb-3">
               <Sparkles className="w-4 h-4" /> More coming
             </div>
-            <p className="text-foreground/80 text-base md:text-lg max-w-2xl mx-auto">
+            <p className="relative text-white/90 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Future games, tournaments, and community events will be shared here as they&apos;re confirmed.
               Follow us on social media or subscribe to our newsletter so you don&apos;t miss a fixture.
             </p>
