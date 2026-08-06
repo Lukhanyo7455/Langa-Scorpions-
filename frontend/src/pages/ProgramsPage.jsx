@@ -21,9 +21,16 @@ export default function ProgramsPage() {
         <div className="container-app grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6">
             <div className="eyebrow mb-4">Programs</div>
-            <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight mb-6">
-              Wheelchair Basketball
-            </h1>
+            <div className="flex items-center gap-5 mb-6">
+              <img
+                src="https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/m0p92voa_Untitled%20design-4.webp"
+                alt="Langa Scorpions Wheelchair Basketball Club crest"
+                className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover ring-4 ring-accent/20 shadow-lg shrink-0"
+              />
+              <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight">
+                Wheelchair Basketball
+              </h1>
+            </div>
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
               Our founding program — a full season of coaching, competition, and community for young
               athletes with disabilities aged 16 to 35. Every athlete is welcome, at every level.
