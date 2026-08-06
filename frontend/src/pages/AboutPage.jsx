@@ -12,8 +12,8 @@ const VALUES = [
 const TEAM = [
   { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
   { name: "Charisma Van Eck", role: "Head Coach" },
-  { name: "Ralph Williams", role: "Assistant Coach" },
-  { name: "Lerato Khumalo", role: "Athlete Welfare & Family Liaison" },
+  { name: "Ralph Reynolds", role: "Men's Team Head Coach" },
+  { name: "Lerato Khumalo", role: "Administrative Coordinator" },
   { name: "David Peters", role: "Board Chairperson" },
   { name: "Dr. Amina Patel", role: "Board Member — Medical Advisor" },
   { name: "Sipho Ndlovu", role: "Board Member — Community" },
