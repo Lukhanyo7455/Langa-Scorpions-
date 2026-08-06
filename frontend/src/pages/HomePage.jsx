@@ -31,7 +31,7 @@ export default function HomePage() {
         <div className="container-app relative py-28 md:py-40 lg:py-48 text-white animate-fade-up">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-4 py-1.5 text-xs uppercase tracking-[0.18em] mb-8 border border-white/20">
-              <Sparkles className="w-3.5 h-3.5 text-accent" /> Adaptive sports for young people in Langa
+              Adaptive sports for young people in Langa
             </div>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.98] mb-6">
               Sport that <span className="text-accent">rewrites</span> what's possible.
