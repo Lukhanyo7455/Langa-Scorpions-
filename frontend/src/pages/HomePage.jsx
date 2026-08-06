@@ -88,7 +88,7 @@ export default function HomePage() {
             <h2 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">Wheelchair Basketball</h2>
             <p className="text-white/85 text-lg leading-relaxed mb-6">
               Structured weekly practices, competitive matches, and mentorship for young persons with
-              disabilities aged 12–25. Chairs and equipment are provided — all we ask is your commitment.
+              disabilities aged 16 to 35. Chairs and equipment are provided — all we ask is your commitment.
             </p>
             <ul className="space-y-3 text-white/85 mb-8">
               {["Free coaching from experienced adaptive-sport coaches", "Provided sports wheelchairs and gear", "Life-skills workshops and mentorship", "Pathway to provincial and national competition"].map((t) => (

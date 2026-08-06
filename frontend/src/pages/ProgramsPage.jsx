@@ -26,7 +26,7 @@ export default function ProgramsPage() {
             </h1>
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
               Our founding program — a full season of coaching, competition, and community for young
-              athletes with disabilities aged 12 to 25. Every athlete is welcome, at every level.
+              athletes with disabilities aged 16 to 35. Every athlete is welcome, at every level.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/register" className="btn-accent" data-testid="program-register-btn">
