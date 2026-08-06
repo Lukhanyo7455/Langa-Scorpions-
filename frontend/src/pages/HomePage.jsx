@@ -58,12 +58,11 @@ export default function HomePage() {
       {/* IMPACT */}
       <section className="section-pad" data-testid="home-impact">
         <div className="container-app">
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Users, label: "Athletes in program", value: `${Math.max(impact.athletes || 0, 30)}+` },
-              { icon: HandHeart, label: "Active volunteers", value: impact.volunteers },
+              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 12) },
               { icon: Trophy, label: "Programs running", value: impact.programs },
-              { icon: Calendar, label: "Upcoming events", value: impact.events_upcoming },
             ].map(({ icon: Icon, label, value }, i) => (
               <div key={label} className="card-soft p-8 animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
                 <Icon className="w-7 h-7 text-accent mb-4" />
