@@ -64,7 +64,7 @@ export default function HomePage() {
               { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 12) },
               { icon: Trophy, label: "Programs running", value: impact.programs },
             ].map(({ icon: Icon, label, value }, i) => (
-              <div key={label} className="card-soft p-8 animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+              <div key={label} className="card-soft p-8 text-center flex flex-col items-center animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
                 <Icon className="w-7 h-7 text-accent mb-4" />
                 <div className="text-4xl font-heading font-bold text-primary">{value}</div>
                 <div className="text-sm text-muted-foreground mt-2">{label}</div>
