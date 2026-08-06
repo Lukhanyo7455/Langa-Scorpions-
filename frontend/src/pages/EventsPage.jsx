@@ -17,7 +17,11 @@ const fmt = (iso) => {
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
-  useEffect(() => { api.get("/public/events").then((r) => setEvents(r.data)).catch(() => {}); }, []);
+  const [settings, setSettings] = useState({});
+  useEffect(() => {
+    api.get("/public/events").then((r) => setEvents(r.data)).catch(() => {});
+    api.get("/public/settings").then((r) => setSettings(r.data)).catch(() => {});
+  }, []);
 
   return (
     <PublicLayout>
@@ -85,7 +89,14 @@ export default function EventsPage() {
 
         {/* Disclaimer */}
         <div className="container-app mt-10">
-          <div className="rounded-2xl border-2 border-dashed border-accent/30 bg-accent/5 p-6 md:p-8 text-center" data-testid="events-disclaimer">
+          <div className="rounded-2xl border-2 border-dashed border-accent/30 bg-accent/5 p-6 md:p-10 text-center" data-testid="events-disclaimer">
+            {settings.logo_url && (
+              <img
+                src={settings.logo_url}
+                alt="Langa Scorpions"
+                className="w-16 h-16 md:w-20 md:h-20 object-contain mx-auto mb-4 drop-shadow-sm"
+              />
+            )}
             <div className="inline-flex items-center gap-2 text-accent font-semibold text-sm uppercase tracking-widest mb-2">
               <Sparkles className="w-4 h-4" /> More coming
             </div>
