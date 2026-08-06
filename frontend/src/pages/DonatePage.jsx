@@ -58,14 +58,17 @@ export default function DonatePage() {
               Fuel the season.
             </h1>
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
-              Every rand you give buys transport, kit, coaching hours, and the sheer joy of the
-              court for a young athlete in Langa.
+              Every rand you give buys transport, kit, <strong>apparel</strong>,
+              <strong> food packages for events and tournaments</strong>, and
+              <strong> monthly operations</strong> — keeping the Scorpions on the court all season long.
             </p>
             <div className="space-y-4">
               {[
                 { r: 100, t: "One athlete&apos;s transport for a week" },
                 { r: 500, t: "A month of practice transport" },
-                { r: 2500, t: "Gear for a whole practice night" },
+                { r: 1500, t: "Team apparel for one athlete" },
+                { r: 2500, t: "Food packages for a tournament day" },
+                { r: 5000, t: "A month of core operations" },
                 { r: 10000, t: "Sponsor an athlete for the season" },
               ].map((row) => (
                 <div key={row.r} className="flex items-center gap-4 p-4 rounded-2xl bg-primary/5">
