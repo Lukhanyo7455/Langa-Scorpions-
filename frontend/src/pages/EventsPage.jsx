@@ -68,7 +68,9 @@ export default function EventsPage() {
                     <h3 className={`font-bold text-primary mb-2 ${featured ? "text-3xl md:text-4xl" : "text-2xl"}`}>{e.title}</h3>
                     {e.description && <p className="text-foreground/70 mb-3 leading-relaxed">{e.description}</p>}
                     <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
-                      <span className="inline-flex items-center gap-2"><Calendar className="w-4 h-4 text-accent" />{fmt(e.starts_at)}</span>
+                      {e.starts_at && (
+                        <span className="inline-flex items-center gap-2"><Calendar className="w-4 h-4 text-accent" />{fmt(e.starts_at)}</span>
+                      )}
                       <span className="inline-flex items-center gap-2"><MapPin className="w-4 h-4 text-accent" />{e.location}</span>
                     </div>
                   </div>
