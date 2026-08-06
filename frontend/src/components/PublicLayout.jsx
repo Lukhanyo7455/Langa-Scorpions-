@@ -137,7 +137,7 @@ export const PublicLayout = ({ children }) => {
           <div className="md:col-span-2">
             <div className="flex items-center gap-4 mb-5">
               {settings.logo_url ? (
-                <img src={settings.logo_url} alt="Langa Scorpions logo" className="w-16 h-16 object-contain drop-shadow-lg" />
+                <img src={settings.logo_url} alt="Langa Scorpions logo" className="w-16 h-16 rounded-2xl object-contain bg-white p-1.5 drop-shadow-lg" />
               ) : (
                 <div className="w-16 h-16 rounded-2xl bg-accent grid place-items-center font-bold text-xl">LS</div>
               )}
