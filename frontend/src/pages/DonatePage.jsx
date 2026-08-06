@@ -154,7 +154,7 @@ export default function DonatePage() {
                   className="btn-accent w-full !py-4 text-base"
                   data-testid="donate-pay-card"
                 >
-                  <Heart className="w-4 h-4" /> {loading ? "Redirecting…" : `Pay R${(finalAmount || 0).toLocaleString()} by card`}
+                  <Heart className="w-4 h-4" /> {loading ? "Redirecting…" : "Pay by card"}
                 </button>
                 <button type="submit" disabled={loading} className="btn-outline-primary w-full !py-4 text-base" data-testid="donate-submit">
                   {loading ? "Sending…" : "Pledge (contact me)"}
