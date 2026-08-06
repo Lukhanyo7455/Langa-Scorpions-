@@ -31,7 +31,7 @@ export default function VolunteerPage() {
             Bring your time. Change a life.
           </h1>
           <p className="text-lg text-foreground/80 mb-10">
-            We need coaches, physios, drivers, event helpers, photographers, and admin volunteers.
+            We need coaches, physios, event helpers, photographers, and admin volunteers.
             Whatever your skill, we&apos;ll find a way to use it well.
           </p>
 
@@ -52,7 +52,7 @@ export default function VolunteerPage() {
               <div>
                 <label className="block text-sm font-semibold text-primary mb-2">Role interest <span className="text-accent">*</span></label>
                 <select required value={f.role_interest} onChange={upd("role_interest")} className={baseInput} data-testid="vol-role">
-                  {["General volunteer", "Coach / assistant coach", "Physio / medical", "Driver / transport", "Events & fundraising", "Media & photography", "Admin & office", "Mentorship"].map((r) => <option key={r}>{r}</option>)}
+                  {["General volunteer", "Coach / assistant coach", "Physio / medical", "Events & fundraising", "Media & photography", "Admin & office", "Mentorship"].map((r) => <option key={r}>{r}</option>)}
                 </select>
               </div>
             </div>
