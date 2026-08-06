@@ -104,7 +104,7 @@ export default function EventsPage() {
               />
             )}
             <div className="relative inline-flex items-center gap-2 text-accent font-bold text-sm uppercase tracking-[0.22em] mb-3">
-              <Sparkles className="w-4 h-4" /> More coming
+              More coming
             </div>
             <p className="relative text-white/90 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Future games, tournaments, and community events will be shared here as they&apos;re confirmed.
