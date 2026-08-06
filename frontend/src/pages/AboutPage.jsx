@@ -28,9 +28,10 @@ export default function AboutPage() {
             A team built in Langa, for young people who refuse to sit out.
           </h1>
           <p className="text-xl text-foreground/80 leading-relaxed">
-            Langa Scorpions started with a handful of borrowed wheelchairs, an empty community hall,
-            and a stubborn belief: that sport belongs to everyone. Today we are a growing team of
-            athletes, coaches, families, and volunteers proving that every week.
+            Langa Scorpions Adaptive Sports &amp; Development started as an idea in 2025 and became a reality in January 2026.
+            Founded by Lukhanyo Mdunyelwa, the organisation was built on the belief that disability should never be a barrier to sport.
+            We believe in equality and that everyone deserves the opportunity to participate, grow, and thrive through sport.
+            Today, Langa Scorpions continues to create inclusive sporting opportunities for people with disabilities and inspire the next generation of adaptive athletes.
           </p>
         </div>
       </section>
