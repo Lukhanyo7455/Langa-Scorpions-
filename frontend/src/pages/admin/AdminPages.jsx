@@ -329,13 +329,14 @@ function CmsPage({ title, endpoint, fields, initial, dataTestId, itemLabel }) {
 export const AdminEvents = () => (
   <CmsPage
     title="Events" endpoint="/admin/events" dataTestId="cms-events" itemLabel="event"
-    initial={{ title: "", kind: "practice", starts_at: "", location: "", description: "", published: true }}
+    initial={{ title: "", kind: "practice", starts_at: "", location: "", description: "", image_url: "", published: true }}
     fields={[
       { name: "title", label: "Title" },
       { name: "kind", label: "Type", type: "select", options: ["practice", "game", "community"] },
-      { name: "starts_at", label: "Starts at (ISO, e.g. 2026-03-01T18:00:00Z)" },
+      { name: "starts_at", label: "Starts at (ISO, e.g. 2027-02-01T14:00:00Z)" },
       { name: "location", label: "Location" },
       { name: "description", label: "Description", type: "textarea" },
+      { name: "image_url", label: "Feature image (optional)", type: "image" },
       { name: "published", label: "", type: "checkbox" },
     ]}
   />

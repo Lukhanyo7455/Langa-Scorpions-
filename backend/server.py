@@ -210,6 +210,7 @@ class EventIn(BaseModel):
     starts_at: str  # ISO datetime
     location: str
     description: Optional[str] = None
+    image_url: Optional[str] = None
     published: bool = True
 
 class StoryIn(BaseModel):
