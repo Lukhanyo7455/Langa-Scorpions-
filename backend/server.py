@@ -178,9 +178,12 @@ class AthleteRegistrationIn(BaseModel):
     date_of_birth: str
     gender: Optional[str] = Field(default=None, max_length=40)
     disability: str = Field(min_length=1, max_length=500)
-    guardian_name: str = Field(min_length=1, max_length=120)
-    guardian_email: EmailStr
-    guardian_phone: str = Field(min_length=1, max_length=40)
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(default=None, max_length=40)
+    is_minor: bool = False
+    guardian_name: Optional[str] = Field(default=None, max_length=120)
+    guardian_email: Optional[EmailStr] = None
+    guardian_phone: Optional[str] = Field(default=None, max_length=40)
     city: Optional[str] = Field(default=None, max_length=120)
     program: str = Field(default="Wheelchair Basketball", max_length=120)
     consent: bool
@@ -424,7 +427,13 @@ async def create_donation(payload: DonationIn):
 @api.post("/public/athletes")
 async def register_athlete(payload: AthleteRegistrationIn):
     if not payload.consent:
-        raise HTTPException(400, "Consent is required to register an athlete.")
+        raise HTTPException(400, "Consent is required to register.")
+    if payload.is_minor:
+        if not (payload.guardian_name and payload.guardian_email and payload.guardian_phone):
+            raise HTTPException(400, "Parent / guardian details are required for athletes under 18.")
+    else:
+        if not (payload.email and payload.phone):
+            raise HTTPException(400, "Your email and phone are required.")
     doc = payload.model_dump()
     doc.update({"status": "new", "created_at": now_iso()})
     r = await db.athlete_registrations.insert_one(doc)

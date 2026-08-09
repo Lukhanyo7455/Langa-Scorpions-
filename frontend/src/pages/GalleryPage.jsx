@@ -23,9 +23,6 @@ export default function GalleryPage() {
             {items.map((g, i) => (
               <figure key={g.id} className="mb-6 break-inside-avoid rounded-2xl overflow-hidden shadow-sm animate-fade-up" style={{ animationDelay: `${i * 40}ms` }} data-testid={`gallery-item-${g.id}`}>
                 <img src={g.image_url} alt={g.caption || "Langa Scorpions"} className="w-full h-auto" loading="lazy" />
-                {g.caption && (
-                  <figcaption className="p-4 bg-white text-sm text-foreground/70">{g.caption}</figcaption>
-                )}
               </figure>
             ))}
           </div>
