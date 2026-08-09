@@ -237,6 +237,8 @@ class SettingsIn(BaseModel):
     whatsapp: Optional[str] = None
     facebook_url: Optional[str] = None
     instagram_url: Optional[str] = None
+    tiktok_url: Optional[str] = None
+    youtube_url: Optional[str] = None
     address: Optional[str] = None
     logo_url: Optional[str] = None
 

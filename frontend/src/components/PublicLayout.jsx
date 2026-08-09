@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Heart, Facebook, Instagram, Mail, MessageCircle } from "lucide-react";
+import { Menu, X, Heart, Facebook, Instagram, Youtube, Mail, MessageCircle } from "lucide-react";
 import { api } from "@/lib/api";
+
+// Simple TikTok icon (not in lucide-react)
+const TikTokIcon = ({ className = "w-5 h-5" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M19.6 6.32a5.34 5.34 0 0 1-3.9-1.68 5.34 5.34 0 0 1-1.4-3.16h-3.5v13.24a2.87 2.87 0 1 1-2.02-2.74V8.32a6.36 6.36 0 1 0 5.52 6.3V9.14a8.83 8.83 0 0 0 5.3 1.75V7.36c-.01 0-.01-.02 0-1.04Z" />
+  </svg>
+);
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -186,15 +193,25 @@ export const PublicLayout = ({ children }) => {
                   WhatsApp: {settings.whatsapp || "+27 00 000 0000"}
                 </a>
               </li>
-              <li className="flex gap-3 pt-2">
+              <li className="flex gap-4 pt-3">
                 {settings.facebook_url && (
-                  <a href={settings.facebook_url} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-accent">
+                  <a href={settings.facebook_url} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-accent transition-colors" data-testid="footer-social-facebook">
                     <Facebook className="w-5 h-5" />
                   </a>
                 )}
                 {settings.instagram_url && (
-                  <a href={settings.instagram_url} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-accent">
+                  <a href={settings.instagram_url} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-accent transition-colors" data-testid="footer-social-instagram">
                     <Instagram className="w-5 h-5" />
+                  </a>
+                )}
+                {settings.tiktok_url && (
+                  <a href={settings.tiktok_url} target="_blank" rel="noreferrer" aria-label="TikTok" className="hover:text-accent transition-colors" data-testid="footer-social-tiktok">
+                    <TikTokIcon />
+                  </a>
+                )}
+                {settings.youtube_url && (
+                  <a href={settings.youtube_url} target="_blank" rel="noreferrer" aria-label="YouTube" className="hover:text-accent transition-colors" data-testid="footer-social-youtube">
+                    <Youtube className="w-5 h-5" />
                   </a>
                 )}
               </li>

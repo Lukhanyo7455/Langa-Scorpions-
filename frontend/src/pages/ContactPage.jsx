@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { api, formatApiError } from "@/lib/api";
 import { toast } from "sonner";
-import { Mail, MessageCircle, MapPin } from "lucide-react";
+import { Mail, MessageCircle, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
+
+const TikTokIcon = ({ className = "w-5 h-5" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M19.6 6.32a5.34 5.34 0 0 1-3.9-1.68 5.34 5.34 0 0 1-1.4-3.16h-3.5v13.24a2.87 2.87 0 1 1-2.02-2.74V8.32a6.36 6.36 0 1 0 5.52 6.3V9.14a8.83 8.83 0 0 0 5.3 1.75V7.36c-.01 0-.01-.02 0-1.04Z" />
+  </svg>
+);
 
 export default function ContactPage() {
   const [settings, setSettings] = useState({});
@@ -74,6 +80,37 @@ export default function ContactPage() {
                 </div>
               </li>
             </ul>
+
+            {/* Socials */}
+            <div className="mb-10" data-testid="contact-socials">
+              <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Follow us</div>
+              <div className="flex flex-wrap gap-3">
+                {settings.facebook_url && (
+                  <a href={settings.facebook_url} target="_blank" rel="noreferrer" aria-label="Facebook"
+                    className="w-12 h-12 rounded-2xl border-2 border-border grid place-items-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="contact-social-facebook">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                )}
+                {settings.instagram_url && (
+                  <a href={settings.instagram_url} target="_blank" rel="noreferrer" aria-label="Instagram"
+                    className="w-12 h-12 rounded-2xl border-2 border-border grid place-items-center text-primary hover:bg-accent hover:text-white hover:border-accent transition-colors" data-testid="contact-social-instagram">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                )}
+                {settings.tiktok_url && (
+                  <a href={settings.tiktok_url} target="_blank" rel="noreferrer" aria-label="TikTok"
+                    className="w-12 h-12 rounded-2xl border-2 border-border grid place-items-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="contact-social-tiktok">
+                    <TikTokIcon />
+                  </a>
+                )}
+                {settings.youtube_url && (
+                  <a href={settings.youtube_url} target="_blank" rel="noreferrer" aria-label="YouTube"
+                    className="w-12 h-12 rounded-2xl border-2 border-border grid place-items-center text-primary hover:bg-accent hover:text-white hover:border-accent transition-colors" data-testid="contact-social-youtube">
+                    <Youtube className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+            </div>
 
             <div className="card-soft p-6">
               <div className="eyebrow mb-2">Newsletter</div>
