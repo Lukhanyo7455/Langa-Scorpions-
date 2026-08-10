@@ -61,7 +61,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Users, label: "Athletes in program", value: `${Math.max(impact.athletes || 0, 30)}+` },
-              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 12) },
+              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 10) },
               { icon: Trophy, label: "Programs running", value: impact.programs },
             ].map(({ icon: Icon, label, value }, i) => (
               <div key={label} className="card-soft p-8 text-center flex flex-col items-center animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
