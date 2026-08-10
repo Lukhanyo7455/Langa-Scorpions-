@@ -13,6 +13,8 @@ from typing import Optional, List, Literal, Annotated
 import bcrypt
 import jwt
 import requests
+import httpx
+import asyncio
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query, UploadFile, File, Header
@@ -37,6 +39,63 @@ ORG_EMAIL = os.environ.get("ORG_EMAIL", "info@langascorpions.org")
 ORG_WHATSAPP = os.environ.get("ORG_WHATSAPP", "+27000000000")
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY", "sk_test_emergent")
+
+# Email (Emergent-managed Resend)
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMERGENT_EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY", "")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "Langa Scorpions")
+
+async def _send_email(to: str, subject: str, html: str, reply_to: Optional[str] = None) -> None:
+    if not EMERGENT_EMAIL_KEY or not to:
+        return
+    payload = {
+        "to": [to],
+        "subject": subject,
+        "html": html,
+        "from_name": EMAIL_FROM_NAME,
+    }
+    if reply_to:
+        payload["contact_email"] = reply_to
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.post(
+                f"{EMAIL_BASE_URL}/api/v1/email/send",
+                headers={"X-Email-Key": EMERGENT_EMAIL_KEY},
+                json=payload,
+            )
+            if r.status_code >= 300:
+                logging.getLogger("langa").warning("Email send %s: %s", r.status_code, r.text[:200])
+    except Exception as e:
+        logging.getLogger("langa").warning("Email send error: %s", e)
+
+def _fire_and_forget(coro):
+    """Send an email without blocking the API response."""
+    try:
+        asyncio.get_running_loop().create_task(coro)
+    except RuntimeError:
+        asyncio.run(coro)
+
+def _email_shell(title: str, body_html: str) -> str:
+    return f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:24px 0;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+          <tr><td style="background:#141414;padding:24px 32px;color:#ffffff">
+            <div style="font-size:22px;font-weight:800;letter-spacing:-0.02em">Langa <span style="color:#B91C2C">Scorpions</span></div>
+            <div style="font-size:11px;color:#B91C2C;text-transform:uppercase;letter-spacing:0.2em;margin-top:6px">Adaptive Sports · Development</div>
+          </td></tr>
+          <tr><td style="padding:32px">
+            <h1 style="margin:0 0 12px;color:#141414;font-size:22px;font-weight:700">{title}</h1>
+            <div style="color:#333;font-size:15px;line-height:1.6">{body_html}</div>
+          </td></tr>
+          <tr><td style="padding:20px 32px;background:#fafafa;color:#666;font-size:12px;border-top:1px solid #eaeaea">
+            Langa Scorpions Adaptive Sports and Development · Langa, Cape Town<br/>
+            <a href="mailto:info@langascorpions.co.za" style="color:#B91C2C">info@langascorpions.co.za</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
 
 # Object storage
 STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
@@ -419,11 +478,41 @@ async def public_impact():
     }
 
 # ---------- Public Form Submissions ----------
+NOTIFY_EMAIL = "info@langascorpions.co.za"
+
 @api.post("/public/donations")
 async def create_donation(payload: DonationIn):
     doc = payload.model_dump()
     doc.update({"status": "pledged", "created_at": now_iso()})
     r = await db.donations.insert_one(doc)
+
+    freq_label = "monthly" if payload.frequency == "monthly" else "one-time"
+    # Notify org
+    _fire_and_forget(_send_email(
+        NOTIFY_EMAIL,
+        f"New donation pledge — R{payload.amount:,.0f} from {payload.donor_name}",
+        _email_shell("New donation pledge", f"""
+          <p><strong>{payload.donor_name}</strong> pledged <strong>R{payload.amount:,.0f} ({freq_label})</strong>.</p>
+          <ul>
+            <li>Email: <a href="mailto:{payload.email}">{payload.email}</a></li>
+            <li>Phone: {payload.phone or "—"}</li>
+            <li>Message: {payload.message or "—"}</li>
+          </ul>
+          <p style="color:#666;font-size:13px">Follow up with EFT / banking details to complete the donation.</p>
+        """),
+        reply_to=payload.email,
+    ))
+    # Warm confirmation to donor
+    _fire_and_forget(_send_email(
+        payload.email,
+        "Thank you for pledging to Langa Scorpions",
+        _email_shell(f"Thank you, {payload.donor_name.split()[0]} 🏀", f"""
+          <p>Your pledge of <strong>R{payload.amount:,.0f} ({freq_label})</strong> means the world to our athletes.</p>
+          <p>We'll email you our banking details shortly so you can complete the donation via EFT. If you have any questions, just hit reply — this email goes straight to us.</p>
+          <p style="margin-top:24px">— The Langa Scorpions team</p>
+        """),
+        reply_to=NOTIFY_EMAIL,
+    ))
     return {"id": str(r.inserted_id), "status": "pledged"}
 
 @api.post("/public/athletes")
@@ -439,6 +528,40 @@ async def register_athlete(payload: AthleteRegistrationIn):
     doc = payload.model_dump()
     doc.update({"status": "new", "created_at": now_iso()})
     r = await db.athlete_registrations.insert_one(doc)
+
+    contact_email = payload.guardian_email if payload.is_minor else payload.email
+    contact_name = payload.guardian_name if payload.is_minor else payload.athlete_name
+    _fire_and_forget(_send_email(
+        NOTIFY_EMAIL,
+        f"New athlete registration — {payload.athlete_name}",
+        _email_shell("New athlete registration", f"""
+          <ul>
+            <li><strong>Athlete:</strong> {payload.athlete_name}</li>
+            <li><strong>DOB:</strong> {payload.date_of_birth}</li>
+            <li><strong>Gender:</strong> {payload.gender or "—"}</li>
+            <li><strong>City:</strong> {payload.city or "—"}</li>
+            <li><strong>Program:</strong> {payload.program}</li>
+            <li><strong>Minor?</strong> {"Yes" if payload.is_minor else "No"}</li>
+            <li><strong>Contact email:</strong> <a href="mailto:{contact_email}">{contact_email}</a></li>
+            <li><strong>Contact phone:</strong> {payload.guardian_phone if payload.is_minor else payload.phone}</li>
+            <li><strong>Disability / mobility:</strong> {payload.disability}</li>
+            <li><strong>Notes:</strong> {payload.notes or "—"}</li>
+          </ul>
+        """),
+        reply_to=contact_email or None,
+    ))
+    if contact_email:
+        _fire_and_forget(_send_email(
+            contact_email,
+            "We received the Scorpions registration",
+            _email_shell(f"Welcome to the Scorpions family, {contact_name.split()[0]}", f"""
+              <p>Thanks for registering <strong>{payload.athlete_name}</strong> for our Wheelchair Basketball program.</p>
+              <p>A coach will be in touch within 3 working days to arrange a first practice visit — practice is <strong>Sundays 16:00–19:00</strong> at Langa Community Sports Hall.</p>
+              <p>Reply to this email if you have any questions in the meantime.</p>
+              <p style="margin-top:24px">— The Langa Scorpions team</p>
+            """),
+            reply_to=NOTIFY_EMAIL,
+        ))
     return {"id": str(r.inserted_id), "status": "received"}
 
 @api.post("/public/volunteers")
@@ -446,6 +569,32 @@ async def register_volunteer(payload: VolunteerIn):
     doc = payload.model_dump()
     doc.update({"status": "new", "created_at": now_iso()})
     r = await db.volunteers.insert_one(doc)
+
+    _fire_and_forget(_send_email(
+        NOTIFY_EMAIL,
+        f"New volunteer signup — {payload.full_name} ({payload.role_interest})",
+        _email_shell("New volunteer signup", f"""
+          <ul>
+            <li><strong>Name:</strong> {payload.full_name}</li>
+            <li><strong>Email:</strong> <a href="mailto:{payload.email}">{payload.email}</a></li>
+            <li><strong>Phone:</strong> {payload.phone or "—"}</li>
+            <li><strong>Role interest:</strong> {payload.role_interest}</li>
+            <li><strong>Availability:</strong> {payload.availability or "—"}</li>
+            <li><strong>Experience:</strong> {payload.experience or "—"}</li>
+          </ul>
+        """),
+        reply_to=payload.email,
+    ))
+    _fire_and_forget(_send_email(
+        payload.email,
+        "Welcome to the Scorpions volunteer team",
+        _email_shell(f"Thanks {payload.full_name.split()[0]} — we'll be in touch", f"""
+          <p>Thank you for offering your time to Langa Scorpions. We'll match you to the right role and reach out within a week.</p>
+          <p>Reply to this email if you have questions — it goes straight to <a href="mailto:info@langascorpions.co.za">info@langascorpions.co.za</a>.</p>
+          <p style="margin-top:24px">— The Langa Scorpions team</p>
+        """),
+        reply_to=NOTIFY_EMAIL,
+    ))
     return {"id": str(r.inserted_id), "status": "received"}
 
 @api.post("/public/contact")
@@ -453,6 +602,17 @@ async def contact(payload: ContactIn):
     doc = payload.model_dump()
     doc.update({"status": "new", "created_at": now_iso()})
     r = await db.contact_messages.insert_one(doc)
+
+    _fire_and_forget(_send_email(
+        NOTIFY_EMAIL,
+        f"[Contact] {payload.subject or 'New message from ' + payload.name}",
+        _email_shell(f"New message from {payload.name}", f"""
+          <p><strong>Email:</strong> <a href="mailto:{payload.email}">{payload.email}</a></p>
+          <p><strong>Subject:</strong> {payload.subject or "—"}</p>
+          <p style="white-space:pre-wrap;margin-top:12px;padding:12px;background:#f8f8f8;border-left:3px solid #B91C2C">{payload.message}</p>
+        """),
+        reply_to=payload.email,
+    ))
     return {"id": str(r.inserted_id), "status": "received"}
 
 @api.post("/public/newsletter")

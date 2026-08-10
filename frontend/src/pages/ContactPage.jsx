@@ -57,19 +57,33 @@ export default function ContactPage() {
               Questions about registering, volunteering, sponsoring, or media requests — we&apos;d love to hear from you.
             </p>
 
-            <ul className="space-y-4 mb-10">
+            <ul className="space-y-3 mb-10" data-testid="contact-emails">
               <li className="flex items-start gap-3">
                 <span className="w-10 h-10 rounded-xl bg-accent/10 text-accent grid place-items-center shrink-0"><Mail className="w-5 h-5" /></span>
                 <div>
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">Email</div>
-                  <a className="text-primary font-semibold hover:text-accent" href={`mailto:${settings.org_email || "info@langascorpions.org"}`} data-testid="contact-email-link">{settings.org_email || "info@langascorpions.org"}</a>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">General</div>
+                  <a className="text-primary font-semibold hover:text-accent break-all" href="mailto:info@langascorpions.co.za" data-testid="contact-email-info">info@langascorpions.co.za</a>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-10 h-10 rounded-xl bg-accent/10 text-accent grid place-items-center shrink-0"><Mail className="w-5 h-5" /></span>
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">Partnerships</div>
+                  <a className="text-primary font-semibold hover:text-accent break-all" href="mailto:partnerships.lsasd@langascorpions.co.za" data-testid="contact-email-partnerships">partnerships.lsasd@langascorpions.co.za</a>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-10 h-10 rounded-xl bg-accent/10 text-accent grid place-items-center shrink-0"><Mail className="w-5 h-5" /></span>
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">Founder — Lukhanyo Mdunyelwa</div>
+                  <a className="text-primary font-semibold hover:text-accent break-all" href="mailto:lukhanyomdunyelwa@langascorpions.co.za" data-testid="contact-email-founder">lukhanyomdunyelwa@langascorpions.co.za</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-10 h-10 rounded-xl bg-accent/10 text-accent grid place-items-center shrink-0"><MessageCircle className="w-5 h-5" /></span>
                 <div>
                   <div className="text-xs uppercase tracking-widest text-muted-foreground">WhatsApp</div>
-                  <a className="text-primary font-semibold hover:text-accent" target="_blank" rel="noreferrer" href={`https://wa.me/${waNum}`} data-testid="contact-whatsapp-link">{settings.whatsapp || "+27 00 000 0000"}</a>
+                  <a className="text-primary font-semibold hover:text-accent" target="_blank" rel="noreferrer" href={`https://wa.me/${waNum}`} data-testid="contact-whatsapp-link">{settings.whatsapp || "+27 73 811 3907"}</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
