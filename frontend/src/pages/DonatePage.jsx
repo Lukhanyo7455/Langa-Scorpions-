@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { api, formatApiError } from "@/lib/api";
 import { toast } from "sonner";
-import { Heart, Repeat, Zap } from "lucide-react";
+import { Heart, Repeat, Zap, CreditCard, Clock } from "lucide-react";
 
 const PRESETS = [100, 250, 500, 1000, 2500];
 
@@ -15,23 +15,12 @@ export default function DonatePage() {
 
   const finalAmount = custom ? parseFloat(custom) : amount;
 
-  const payWithCard = async () => {
-    if (!finalAmount || finalAmount <= 0) { toast.error("Please enter a donation amount."); return; }
-    if (!form.donor_name || !form.email) { toast.error("Please fill in your name and email first."); return; }
-    setLoading(true);
-    try {
-      const { data } = await api.post("/public/donations/checkout", {
-        amount: finalAmount,
-        donor_name: form.donor_name,
-        email: form.email,
-        frequency: "one-time",
-        origin_url: window.location.origin,
-      });
-      window.location.href = data.checkout_url;
-    } catch (err) {
-      toast.error(formatApiError(err.response?.data?.detail) || "Payment could not start.");
-      setLoading(false);
-    }
+  const payWithPayFast = () => {
+    // PayFast integration is pending merchant approval — show a friendly notice for now.
+    toast("Card payments via PayFast launching soon", {
+      description: "We're finalising our PayFast merchant approval. In the meantime, please use the Pledge option below and we'll email you payment details.",
+      duration: 6000,
+    });
   };
 
   const submit = async (e) => {
@@ -148,20 +137,25 @@ export default function DonatePage() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-3 pt-2">
+              <div className="pt-2 space-y-3">
                 <button
-                  type="button" onClick={payWithCard} disabled={loading}
-                  className="btn-accent w-full !py-4 text-base"
-                  data-testid="donate-pay-card"
+                  type="button" onClick={payWithPayFast}
+                  className="btn-accent w-full !py-4 text-base relative"
+                  data-testid="donate-pay-payfast"
                 >
-                  <Heart className="w-4 h-4" /> {loading ? "Redirecting…" : "Pay by card"}
+                  <CreditCard className="w-4 h-4" />
+                  Pay with PayFast
+                  <span className="absolute top-2 right-3 text-[10px] uppercase tracking-widest font-bold bg-white/20 border border-white/30 rounded-full px-2 py-0.5 inline-flex items-center gap-1">
+                    <Clock className="w-2.5 h-2.5" /> Coming soon
+                  </span>
                 </button>
                 <button type="submit" disabled={loading} className="btn-outline-primary w-full !py-4 text-base" data-testid="donate-submit">
-                  {loading ? "Sending…" : "Pledge (contact me)"}
+                  <Heart className="w-4 h-4" /> {loading ? "Sending…" : "Pledge (we'll contact you)"}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground text-center">
-                Card payments are securely processed by Stripe. Prefer EFT or need an invoice? Use pledge — we&apos;ll be in touch.
+              <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                PayFast card payments are launching once our merchant approval is complete — donors will be able to pay by SA card, EFT, and Instant EFT.
+                In the meantime, choose <strong>Pledge</strong> and we&apos;ll email you our banking details for a direct EFT donation.
               </p>
             </form>
           </div>
