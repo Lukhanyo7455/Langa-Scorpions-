@@ -10,13 +10,33 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
-  { name: "Charisma Van Eck", role: "Secretary" },
-  { name: "Ralph Reynolds", role: "Head Coach, Men's Team (Wheelchair Basketball)" },
-  { name: "Rebecca Cullum", role: "Strength & Conditioning · Head Coach, Women's Team (Wheelchair Basketball)" },
+  {
+    name: "Lukhanyo Mdunyelwa",
+    role: "Founder & Chairperson",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/feeo6gfw_Lukhanyo%20Mdunyelwa.png",
+  },
+  {
+    name: "Charisma Van Eck",
+    role: "Secretary",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/f16sx5ix_Charisma%20Van%20Eck%20.png",
+  },
+  {
+    name: "Ralph Reynolds",
+    role: "Head Coach, Men's Team (Wheelchair Basketball)",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/uy8jl9zz_Ralph%20Reynolds.png",
+  },
+  {
+    name: "Rebecca Cullum",
+    role: "Strength & Conditioning · Head Coach, Women's Team (Wheelchair Basketball)",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/eazfs8hr_Rebecca%20Cullum.png",
+  },
   { name: "Ralph Williams", role: "Assistant Coach of Wheelchair Basketball" },
   { name: "Yolanda Dlakhulu", role: "Assistant Coach, Women's Team (Wheelchair Basketball)" },
-  { name: "Lubabalo Ndzaba", role: "Ambassador" },
+  {
+    name: "Lubabalo Ndzaba",
+    role: "Ambassador",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/2xf8vb69_Lubabalo%20Ndzaba%20.png",
+  },
 ];
 
 export default function AboutPage() {
@@ -59,12 +79,25 @@ export default function AboutPage() {
           <h2 className="text-4xl md:text-5xl font-bold mb-10">Our Team</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {TEAM.map((p) => (
-              <div key={p.name} className="rounded-2xl border border-white/15 p-6 bg-white/5">
-                <div className="w-14 h-14 rounded-full bg-accent text-white grid place-items-center font-bold text-lg mb-4">
-                  {p.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
-                </div>
+              <div key={p.name} className="rounded-2xl border border-white/15 p-6 bg-white/5" data-testid={`team-card-${p.name.replace(/\s+/g, "-").toLowerCase()}`}>
+                {p.photo ? (
+                  <div className="w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-primary-800/40 ring-1 ring-white/10">
+                    <img
+                      src={p.photo}
+                      alt={`${p.name} — ${p.role}`}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full aspect-square rounded-2xl bg-accent/15 text-accent grid place-items-center mb-4 ring-1 ring-white/10">
+                    <span className="font-heading font-bold text-5xl">
+                      {p.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+                    </span>
+                  </div>
+                )}
                 <div className="font-semibold text-lg">{p.name}</div>
-                <div className="text-sm text-white/70">{p.role}</div>
+                <div className="text-sm text-white/70 mt-1">{p.role}</div>
               </div>
             ))}
           </div>
