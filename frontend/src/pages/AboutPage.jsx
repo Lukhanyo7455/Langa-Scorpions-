@@ -91,6 +91,7 @@ export default function AboutPage() {
                       alt={`${p.name} — ${p.role}`}
                       loading="lazy"
                       className="w-full h-full object-cover"
+                      style={{ filter: "brightness(0.9) contrast(1.25) saturate(1.05)" }}
                     />
                   </div>
                 ) : (
