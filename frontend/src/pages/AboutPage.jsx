@@ -85,7 +85,7 @@ export default function AboutPage() {
             {TEAM.map((p) => (
               <div key={p.name} className="rounded-2xl border border-white/15 p-6 bg-white/5" data-testid={`team-card-${p.name.replace(/\s+/g, "-").toLowerCase()}`}>
                 {p.photo ? (
-                  <div className="w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-primary-800/40 ring-1 ring-white/10">
+                  <div className="w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-black ring-1 ring-white/10">
                     <img
                       src={p.photo}
                       alt={`${p.name} — ${p.role}`}
@@ -94,7 +94,7 @@ export default function AboutPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-full aspect-square rounded-2xl bg-accent/15 text-accent grid place-items-center mb-4 ring-1 ring-white/10">
+                  <div className="w-full aspect-square rounded-2xl bg-black text-accent grid place-items-center mb-4 ring-1 ring-white/10">
                     <span className="font-heading font-bold text-5xl">
                       {p.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
                     </span>
