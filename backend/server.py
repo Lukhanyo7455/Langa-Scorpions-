@@ -39,9 +39,37 @@ EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
 EMAIL_BASE_URL = "https://integrations.emergentagent.com"
 EMERGENT_EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY", "")
 EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "Langa Scorpions")
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+RESEND_FROM_EMAIL = os.environ.get("RESEND_FROM_EMAIL", "")
 
 async def _send_email(to: str, subject: str, html: str, reply_to: Optional[str] = None) -> None:
-    if not EMERGENT_EMAIL_KEY or not to:
+    if not to:
+        return
+    # Prefer direct Resend (BYO API key + verified sender domain) when configured
+    if RESEND_API_KEY and RESEND_FROM_EMAIL:
+        payload = {
+            "from": f"{EMAIL_FROM_NAME} <{RESEND_FROM_EMAIL}>",
+            "to": [to],
+            "subject": subject,
+            "html": html,
+        }
+        if reply_to:
+            payload["reply_to"] = reply_to
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                r = await client.post(
+                    "https://api.resend.com/emails",
+                    headers={"Authorization": f"Bearer {RESEND_API_KEY}",
+                             "Content-Type": "application/json"},
+                    json=payload,
+                )
+                if r.status_code >= 300:
+                    logging.getLogger("langa").warning("Resend send %s: %s", r.status_code, r.text[:200])
+        except Exception as e:
+            logging.getLogger("langa").warning("Resend send error: %s", e)
+        return
+    # Fallback to Emergent-managed integration
+    if not EMERGENT_EMAIL_KEY:
         return
     payload = {
         "to": [to],
