@@ -140,12 +140,14 @@ export default function DonatePage() {
               <div className="pt-2 space-y-3">
                 <button
                   type="button" onClick={payWithPayFast}
-                  className="btn-accent w-full !py-4 text-base relative"
+                  className="btn-accent w-full !py-4 text-base flex-col sm:flex-row gap-2 sm:relative"
                   data-testid="donate-pay-payfast"
                 >
-                  <CreditCard className="w-4 h-4" />
-                  Pay with PayFast
-                  <span className="absolute top-2 right-3 text-[10px] uppercase tracking-widest font-bold bg-white/20 border border-white/30 rounded-full px-2 py-0.5 inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Pay with PayFast
+                  </span>
+                  <span className="sm:absolute sm:top-2 sm:right-3 text-[10px] uppercase tracking-widest font-bold bg-white/20 border border-white/30 rounded-full px-2 py-0.5 inline-flex items-center gap-1 whitespace-nowrap">
                     <Clock className="w-2.5 h-2.5" /> Coming soon
                   </span>
                 </button>
