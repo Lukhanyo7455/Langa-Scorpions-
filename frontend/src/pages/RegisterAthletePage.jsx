@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { api, formatApiError } from "@/lib/api";
 import { toast } from "sonner";
+import { User, Users } from "lucide-react";
 
 export default function RegisterAthletePage() {
+  const [mode, setMode] = useState("adult"); // "adult" | "minor"
   const [f, setF] = useState({
     athlete_name: "", date_of_birth: "", gender: "", disability: "",
+    email: "", phone: "",
     guardian_name: "", guardian_email: "", guardian_phone: "",
     city: "Cape Town", program: "Wheelchair Basketball", notes: "", consent: false,
   });
@@ -14,12 +17,18 @@ export default function RegisterAthletePage() {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!f.consent) { toast.error("Please confirm parent / guardian consent."); return; }
+    if (!f.consent) { toast.error("Please tick the consent box to register."); return; }
     setLoading(true);
+    const payload = { ...f, is_minor: mode === "minor" };
+    if (mode === "adult") {
+      payload.guardian_name = "";
+      payload.guardian_email = "";
+      payload.guardian_phone = "";
+    }
     try {
-      await api.post("/public/athletes", f);
+      await api.post("/public/athletes", payload);
       toast.success("Registration received! We'll be in touch within 3 working days.");
-      setF({ ...f, athlete_name: "", date_of_birth: "", disability: "", guardian_name: "", guardian_email: "", guardian_phone: "", notes: "", consent: false });
+      setF({ ...f, athlete_name: "", date_of_birth: "", disability: "", email: "", phone: "", guardian_name: "", guardian_email: "", guardian_phone: "", notes: "", consent: false });
     } catch (err) {
       toast.error(formatApiError(err.response?.data?.detail) || "Something went wrong.");
     } finally { setLoading(false); }
@@ -32,13 +41,41 @@ export default function RegisterAthletePage() {
           <div className="eyebrow mb-4">Athlete registration</div>
           <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight mb-4">Join the Scorpions.</h1>
           <p className="text-lg text-foreground/80 mb-10">
-            Register a young person for our wheelchair basketball program. A coach will contact the guardian to arrange a first practice visit.
+            Register for our Wheelchair Basketball program. A coach will contact you within 3 working days to arrange a first practice visit.
           </p>
+
+          {/* Mode toggle */}
+          <div className="grid grid-cols-2 gap-3 mb-8" role="radiogroup" aria-label="Registration type" data-testid="register-mode">
+            <button
+              type="button" role="radio" aria-checked={mode === "adult"}
+              onClick={() => setMode("adult")}
+              className={`p-5 rounded-2xl border-2 text-left transition-colors duration-150 ${
+                mode === "adult" ? "border-accent bg-accent/5" : "border-border hover:border-accent/50"
+              }`}
+              data-testid="mode-adult"
+            >
+              <User className={`w-6 h-6 mb-2 ${mode === "adult" ? "text-accent" : "text-muted-foreground"}`} />
+              <div className="font-heading font-bold text-primary text-lg">Adult (18+)</div>
+              <div className="text-xs text-muted-foreground mt-1">I&apos;m registering myself.</div>
+            </button>
+            <button
+              type="button" role="radio" aria-checked={mode === "minor"}
+              onClick={() => setMode("minor")}
+              className={`p-5 rounded-2xl border-2 text-left transition-colors duration-150 ${
+                mode === "minor" ? "border-accent bg-accent/5" : "border-border hover:border-accent/50"
+              }`}
+              data-testid="mode-minor"
+            >
+              <Users className={`w-6 h-6 mb-2 ${mode === "minor" ? "text-accent" : "text-muted-foreground"}`} />
+              <div className="font-heading font-bold text-primary text-lg">Under 18</div>
+              <div className="text-xs text-muted-foreground mt-1">Parent / guardian is registering a child.</div>
+            </button>
+          </div>
 
           <form onSubmit={submit} className="card-soft p-8 md:p-10 space-y-6" data-testid="athlete-form">
             <FieldGroup title="Athlete details">
               <Grid>
-                <TextField label="Athlete full name" value={f.athlete_name} onChange={upd("athlete_name")} testid="athlete-name" required />
+                <TextField label={mode === "minor" ? "Athlete full name" : "Your full name"} value={f.athlete_name} onChange={upd("athlete_name")} testid="athlete-name" required />
                 <TextField label="Date of birth" type="date" value={f.date_of_birth} onChange={upd("date_of_birth")} testid="athlete-dob" required />
                 <TextField label="Gender (optional)" value={f.gender} onChange={upd("gender")} testid="athlete-gender" />
                 <TextField label="City / area" value={f.city} onChange={upd("city")} testid="athlete-city" />
@@ -46,13 +83,22 @@ export default function RegisterAthletePage() {
               <TextArea label="Disability / mobility notes" value={f.disability} onChange={upd("disability")} testid="athlete-disability" required rows={3} />
             </FieldGroup>
 
-            <FieldGroup title="Parent / guardian">
-              <Grid>
-                <TextField label="Guardian full name" value={f.guardian_name} onChange={upd("guardian_name")} testid="guardian-name" required />
-                <TextField label="Guardian phone" value={f.guardian_phone} onChange={upd("guardian_phone")} testid="guardian-phone" required />
-              </Grid>
-              <TextField label="Guardian email" type="email" value={f.guardian_email} onChange={upd("guardian_email")} testid="guardian-email" required />
-            </FieldGroup>
+            {mode === "adult" ? (
+              <FieldGroup title="Your contact details">
+                <Grid>
+                  <TextField label="Email" type="email" value={f.email} onChange={upd("email")} testid="athlete-email" required />
+                  <TextField label="Phone" value={f.phone} onChange={upd("phone")} testid="athlete-phone" required />
+                </Grid>
+              </FieldGroup>
+            ) : (
+              <FieldGroup title="Parent / guardian details">
+                <Grid>
+                  <TextField label="Guardian full name" value={f.guardian_name} onChange={upd("guardian_name")} testid="guardian-name" required />
+                  <TextField label="Guardian phone" value={f.guardian_phone} onChange={upd("guardian_phone")} testid="guardian-phone" required />
+                </Grid>
+                <TextField label="Guardian email" type="email" value={f.guardian_email} onChange={upd("guardian_email")} testid="guardian-email" required />
+              </FieldGroup>
+            )}
 
             <TextArea label="Anything else we should know?" value={f.notes} onChange={upd("notes")} testid="athlete-notes" rows={3} />
 
@@ -63,7 +109,9 @@ export default function RegisterAthletePage() {
                 data-testid="athlete-consent"
               />
               <span className="text-sm text-foreground/80">
-                I am the parent / legal guardian of this athlete and I consent to their participation in Langa Scorpions programs and to being contacted by the team.
+                {mode === "adult"
+                  ? "I confirm that I am 18 or older and I consent to my participation in Langa Scorpions programs and to being contacted by the team."
+                  : "I am the parent or legal guardian of this athlete and I consent to their participation in Langa Scorpions programs and to being contacted by the team."}
               </span>
             </label>
 

@@ -32,7 +32,7 @@ export default function EventsPage() {
             Come see us play. Come train with us.
           </h1>
           <p className="text-xl text-foreground/80 leading-relaxed">
-            Practices, matches, and community events. Everyone is welcome — bring a friend, bring the family.
+            Practices, matches, and community events. Everyone is welcome, bring a friend, bring the family.
           </p>
         </div>
       </section>

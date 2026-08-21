@@ -38,7 +38,7 @@ export default function HomePage() {
             </h1>
             <p className="text-lg md:text-xl text-white/85 max-w-2xl leading-relaxed mb-10">
               Langa Scorpions empowers young persons with disabilities through wheelchair basketball,
-              life skills, and community &mdash; building confidence on and off the court.
+              life skills, and community. Building confidence on and off the court.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/donate" className="btn-accent" data-testid="hero-donate-btn">
@@ -61,7 +61,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Users, label: "Athletes in program", value: `${Math.max(impact.athletes || 0, 30)}+` },
-              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 10) },
+              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 8) },
               { icon: Trophy, label: "Programs running", value: impact.programs },
             ].map(({ icon: Icon, label, value }, i) => (
               <div key={label} className="card-soft p-8 text-center flex flex-col items-center animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
@@ -87,7 +87,7 @@ export default function HomePage() {
             <h2 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">Wheelchair Basketball</h2>
             <p className="text-white/85 text-lg leading-relaxed mb-6">
               Structured weekly practices, competitive matches, and mentorship for young persons with
-              disabilities aged 16 to 35. Chairs and equipment are provided — all we ask is your commitment.
+              disabilities aged 16 to 35. Chairs and equipment are provided, all we ask is your commitment.
             </p>
             <ul className="space-y-3 text-white/85 mb-8">
               {["Free coaching from experienced adaptive-sport coaches", "Provided sports wheelchairs and gear", "Life-skills workshops and mentorship", "Pathway to provincial and national competition"].map((t) => (

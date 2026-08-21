@@ -49,7 +49,7 @@ export default function DonatePage() {
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
               Every rand you give buys transport, kit, <strong>apparel</strong>,
               <strong> food packages for events and tournaments</strong>, and
-              <strong> monthly operations</strong> — keeping the Scorpions on the court all season long.
+              <strong> monthly operations</strong>. Keeping the Scorpions on the court all season long.
             </p>
             <div className="space-y-4">
               {[
@@ -154,7 +154,7 @@ export default function DonatePage() {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                PayFast card payments are launching once our merchant approval is complete — donors will be able to pay by SA card, EFT, and Instant EFT.
+                PayFast card payments are launching once our merchant approval is complete. Donors will be able to pay by SA card, EFT, and Instant EFT.
                 In the meantime, choose <strong>Pledge</strong> and we&apos;ll email you our banking details for a direct EFT donation.
               </p>
             </form>

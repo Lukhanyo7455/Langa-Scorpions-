@@ -32,7 +32,7 @@ export default function ProgramsPage() {
               </h1>
             </div>
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
-              Our founding program — a full season of coaching, competition, and community for young
+              Our founding program: a full season of coaching, competition, and community for young
               athletes with disabilities aged 16 to 35. Every athlete is welcome, at every level.
             </p>
             <div className="flex flex-wrap gap-3">

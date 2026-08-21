@@ -16,7 +16,7 @@ export default function StoriesPage() {
             The scoreboard tells one story. The court tells a bigger one.
           </h1>
           <p className="text-xl text-foreground/80 leading-relaxed">
-            Meet the young people behind the jerseys — their journeys, their setbacks, and the wins
+            Meet the young people behind the jerseys, their journeys, their setbacks, and the wins
             that don&apos;t always show up in a box score.
           </p>
         </div>
