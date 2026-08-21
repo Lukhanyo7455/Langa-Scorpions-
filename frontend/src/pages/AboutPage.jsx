@@ -31,7 +31,11 @@ const TEAM = [
     photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/eazfs8hr_Rebecca%20Cullum.png",
   },
   { name: "Ralph Williams", role: "Assistant Coach of Wheelchair Basketball" },
-  { name: "Yolanda Dlakhulu", role: "Assistant Coach, Women's Team (Wheelchair Basketball)" },
+  {
+    name: "Yolanda Dlakhulu",
+    role: "Assistant Coach, Women's Team (Wheelchair Basketball)",
+    photo: "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/s51dqmhk_Yolanda%20Dlakulu.png",
+  },
   {
     name: "Lubabalo Ndzaba",
     role: "Ambassador",
