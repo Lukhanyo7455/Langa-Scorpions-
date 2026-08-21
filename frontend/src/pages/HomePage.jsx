@@ -8,7 +8,7 @@ const HERO_IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptiv
 const PROGRAM_IMG = "https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/yuqr3b92_656264907_122107481589255555_5368127788220121279_n-2.webp";
 
 export default function HomePage() {
-  const [impact, setImpact] = useState({ athletes: 24, volunteers: 18, programs: 1, events_upcoming: 3 });
+  const [impact, setImpact] = useState({ athletes: 24, volunteers: 13, programs: 1, events_upcoming: 3 });
   const [stories, setStories] = useState([]);
   const [events, setEvents] = useState([]);
   const [sponsors, setSponsors] = useState([]);
@@ -25,8 +25,8 @@ export default function HomePage() {
       {/* HERO */}
       <section className="relative overflow-hidden" data-testid="home-hero">
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="The Langa Scorpions team celebrating on the court" className="w-full h-full object-cover object-center" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/50" />
+          <img src={HERO_IMG} alt="The Langa Scorpions team celebrating on the court" className="w-full h-full object-cover object-center brightness-110" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/60 to-primary/20" />
         </div>
         <div className="container-app relative py-28 md:py-40 lg:py-48 text-white animate-fade-up">
           <div className="max-w-3xl">
@@ -61,7 +61,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Users, label: "Athletes in program", value: `${Math.max(impact.athletes || 0, 30)}+` },
-              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 8) },
+              { icon: HandHeart, label: "Active volunteers", value: Math.max(impact.volunteers || 0, 13) },
               { icon: Trophy, label: "Programs running", value: impact.programs },
             ].map(({ icon: Icon, label, value }, i) => (
               <div key={label} className="card-soft p-8 text-center flex flex-col items-center animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>

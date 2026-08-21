@@ -11,10 +11,10 @@ const VALUES = [
 
 const TEAM = [
   { name: "Lukhanyo Mdunyelwa", role: "Founder & Chairperson" },
-  { name: "Charisma Van Eck", role: "Administrative Coordinator" },
+  { name: "Charisma Van Eck", role: "Secretary" },
   { name: "Ralph Reynolds", role: "Head Coach, Men's Team (Wheelchair Basketball)" },
   { name: "Rebecca Cullum", role: "Strength & Conditioning · Head Coach, Women's Team (Wheelchair Basketball)" },
-  { name: "Ralph Williams", role: "Assistant Coach" },
+  { name: "Ralph Williams", role: "Assistant Coach of Wheelchair Basketball" },
   { name: "Yolanda Dlakhulu", role: "Assistant Coach, Women's Team (Wheelchair Basketball)" },
   { name: "Lubabalo Ndzaba", role: "Ambassador" },
 ];

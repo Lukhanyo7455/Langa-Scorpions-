@@ -21,10 +21,17 @@ export default function RegisterAthletePage() {
     setLoading(true);
     const payload = { ...f, is_minor: mode === "minor" };
     if (mode === "adult") {
-      payload.guardian_name = "";
-      payload.guardian_email = "";
-      payload.guardian_phone = "";
+      payload.guardian_name = null;
+      payload.guardian_email = null;
+      payload.guardian_phone = null;
+    } else {
+      payload.email = null;
+      payload.phone = null;
     }
+    // Coerce any empty strings on optional fields to null so Pydantic EmailStr validators pass
+    ["email", "guardian_email", "phone", "guardian_phone", "guardian_name", "gender", "city", "notes"].forEach((k) => {
+      if (payload[k] === "") payload[k] = null;
+    });
     try {
       await api.post("/public/athletes", payload);
       toast.success("Registration received! We'll be in touch within 3 working days.");

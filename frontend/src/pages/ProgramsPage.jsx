@@ -21,13 +21,13 @@ export default function ProgramsPage() {
         <div className="container-app grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6">
             <div className="eyebrow mb-4">Programs</div>
-            <div className="flex items-center gap-5 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 mb-6">
               <img
                 src="https://customer-assets-agu9un31.emergentagent.net/job_adaptive-sports-3/artifacts/m0p92voa_Untitled%20design-4.webp"
                 alt="Langa Scorpions Wheelchair Basketball Club crest"
-                className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover ring-4 ring-accent/20 shadow-lg shrink-0"
+                className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover ring-4 ring-accent/20 shadow-lg shrink-0"
               />
-              <h1 className="text-5xl md:text-6xl font-bold text-primary leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-primary leading-[1.05] tracking-tight break-words">
                 Wheelchair Basketball
               </h1>
             </div>

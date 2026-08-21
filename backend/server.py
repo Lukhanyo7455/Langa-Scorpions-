@@ -20,7 +20,7 @@ from bson.errors import InvalidId
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query, UploadFile, File, Header
 from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field, field_validator
 from starlette.middleware.cors import CORSMiddleware
 import io
 import csv
@@ -248,6 +248,13 @@ class AthleteRegistrationIn(BaseModel):
     consent: bool
     notes: Optional[str] = Field(default=None, max_length=2000)
 
+    @field_validator("email", "guardian_email", mode="before")
+    @classmethod
+    def _empty_email_to_none(cls, v):
+        if v is None or (isinstance(v, str) and v.strip() == ""):
+            return None
+        return v
+
 class VolunteerIn(BaseModel):
     full_name: str = Field(min_length=1, max_length=120)
     email: EmailStr
@@ -471,7 +478,7 @@ async def public_impact():
     events_upcoming = await db.events.count_documents({"published": True})
     return {
         "athletes": max(athletes, 30),
-        "volunteers": max(volunteers, 18),
+        "volunteers": max(volunteers, 13),
         "donations_total": donations_total,
         "programs": 1,
         "events_upcoming": events_upcoming,
