@@ -9,9 +9,9 @@ const INCLUDED = [
   "Structured practices",
   "Provided sports wheelchairs — no equipment needed to start",
   "Certified coaching in adaptive basketball fundamentals",
-  "Strength &amp; conditioning tailored to each athlete",
+  "Strength & conditioning tailored to each athlete",
   "Life-skills workshops (goal setting, communication, financial basics)",
-  "Team travel to friendly matches &amp; provincial tournaments",
+  "Team travel to friendly matches & provincial tournaments",
 ];
 
 export default function ProgramsPage() {
@@ -65,7 +65,7 @@ export default function ProgramsPage() {
                   <span className="mt-1 w-6 h-6 rounded-full bg-accent/10 text-accent grid place-items-center shrink-0">
                     <Check className="w-4 h-4" />
                   </span>
-                  <span className="text-foreground/80" dangerouslySetInnerHTML={{ __html: t }} />
+                  <span className="text-foreground/80">{t}</span>
                 </li>
               ))}
             </ul>

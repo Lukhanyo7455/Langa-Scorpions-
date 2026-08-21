@@ -11,7 +11,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await api.get("/auth/me");
       setAdmin(data);
-    } catch {
+    } catch (err) {
+      // Not logged in — treat as anonymous
+      if (err?.response?.status && err.response.status !== 401) console.error("auth/me failed:", err);
       setAdmin(false);
     } finally {
       setLoading(false);
@@ -32,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    try { await api.post("/auth/logout"); } catch { /* ignore */ }
+    try { await api.post("/auth/logout"); } catch (err) { console.error("logout failed:", err); }
     localStorage.removeItem("ls_token");
     setAdmin(false);
   };

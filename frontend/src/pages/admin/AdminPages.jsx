@@ -228,7 +228,7 @@ function CmsPage({ title, endpoint, fields, initial, dataTestId, itemLabel }) {
   const [editId, setEditId] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const load = async () => { try { const { data } = await api.get(endpoint); setItems(data); } catch { /* ignore */ } };
+  const load = async () => { try { const { data } = await api.get(endpoint); setItems(data); } catch (err) { console.error(`Failed to load ${endpoint}:`, err); } };
   useEffect(() => { load(); }, [endpoint]);
 
   const submit = async (e) => {

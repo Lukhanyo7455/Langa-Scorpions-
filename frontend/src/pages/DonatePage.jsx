@@ -53,16 +53,16 @@ export default function DonatePage() {
             </p>
             <div className="space-y-4">
               {[
-                { r: 100, t: "Sports drinks &amp; energy for one practice" },
+                { r: 100, t: "Sports drinks & energy for one practice" },
                 { r: 500, t: "A month of transport for one athlete" },
                 { r: 1500, t: "Team apparel for one athlete" },
                 { r: 2500, t: "Food packages for a tournament day" },
-                { r: 5000, t: "Wheelchair repairs &amp; spare parts" },
+                { r: 5000, t: "Wheelchair repairs & spare parts" },
                 { r: 10000, t: "Contribution towards a new sports wheelchair" },
               ].map((row) => (
                 <div key={row.r} className="flex items-center gap-4 p-4 rounded-2xl bg-primary/5">
                   <div className="text-primary font-heading font-bold text-2xl w-24">R{row.r.toLocaleString()}</div>
-                  <div className="text-foreground/80" dangerouslySetInnerHTML={{ __html: row.t }} />
+                  <div className="text-foreground/80">{row.t}</div>
                 </div>
               ))}
             </div>

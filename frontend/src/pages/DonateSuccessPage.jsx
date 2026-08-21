@@ -24,7 +24,9 @@ export default function DonateSuccessPage() {
         setAmount(data.amount || 0);
         if (data.payment_status === "paid") { if (!cancelled) setStatus("paid"); return; }
         if (["expired", "failed"].includes(data.payment_status)) { if (!cancelled) setStatus("error"); return; }
-      } catch { /* keep trying */ }
+      } catch (err) {
+        console.warn("donation status poll failed, retrying:", err?.message || err);
+      }
       if (attempts.current >= MAX_ATTEMPTS) { if (!cancelled) setStatus("pending"); return; }
       setTimeout(tick, POLL_MS);
     };

@@ -7,8 +7,8 @@ import pytest
 import requests
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://adaptive-sports-3.preview.emergentagent.com').rstrip('/')
-ADMIN_EMAIL = "admin@langascorpions.org"
-ADMIN_PASSWORD = "ScorpionsAdmin2026!"
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@langascorpions.org")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "ScorpionsAdmin2026!")
 
 
 def make_png_bytes() -> bytes:
