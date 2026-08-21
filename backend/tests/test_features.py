@@ -112,36 +112,7 @@ class TestObjectStorage:
         assert len(r2.content) > 0
 
 
-# ---------- Stripe ----------
-class TestStripe:
-    def test_checkout_creates_session(self):
-        payload = {
-            "amount": 100.0,
-            "donor_name": "TEST Donor",
-            "email": "test@example.com",
-            "frequency": "one-time",
-            "origin_url": BASE_URL,
-        }
-        r = requests.post(f"{BASE_URL}/api/public/donations/checkout", json=payload, timeout=60)
-        assert r.status_code == 200, r.text
-        data = r.json()
-        assert "checkout_url" in data and "session_id" in data
-        assert data["checkout_url"].startswith("https://checkout.stripe.com"), data["checkout_url"]
-        # Persist for status test
-        TestStripe._sid = data["session_id"]
-
-    def test_checkout_status(self):
-        sid = getattr(TestStripe, "_sid", None)
-        assert sid, "No session id from prior test"
-        r = requests.get(f"{BASE_URL}/api/public/donations/status/{sid}", timeout=30)
-        assert r.status_code == 200, r.text
-        data = r.json()
-        assert data["session_id"] == sid
-        assert "status" in data and "payment_status" in data and "amount" in data
-
-    def test_status_fake_id_returns_404(self):
-        r = requests.get(f"{BASE_URL}/api/public/donations/status/fake_id_xyz", timeout=30)
-        assert r.status_code == 404
+# ---------- Stripe removed — donations use PayFast (pending) or the pledge flow ----------
 
 
 # ---------- Regression ----------

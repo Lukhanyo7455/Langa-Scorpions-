@@ -25,10 +25,6 @@ from starlette.middleware.cors import CORSMiddleware
 import io
 import csv
 
-from emergentintegrations.payments.stripe.checkout import (
-    StripeCheckout, CheckoutSessionRequest, CheckoutSessionResponse, CheckoutStatusResponse,
-)
-
 # ---------- Setup ----------
 MONGO_URL = os.environ["MONGO_URL"]
 DB_NAME = os.environ["DB_NAME"]
@@ -38,7 +34,6 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "changeme")
 ORG_EMAIL = os.environ.get("ORG_EMAIL", "info@langascorpions.org")
 ORG_WHATSAPP = os.environ.get("ORG_WHATSAPP", "+27000000000")
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
-STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY", "sk_test_emergent")
 
 # Email (Emergent-managed Resend)
 EMAIL_BASE_URL = "https://integrations.emergentagent.com"
@@ -314,13 +309,6 @@ class SponsorIn(BaseModel):
     website: Optional[str] = None
     logo_url: Optional[str] = None
     published: bool = True
-
-class DonateCheckoutIn(BaseModel):
-    amount: float = Field(gt=0)
-    donor_name: Optional[str] = None
-    email: Optional[EmailStr] = None
-    frequency: Literal["one-time"] = "one-time"  # subscriptions require price IDs — one-time only for v1
-    origin_url: str
 
 # ---------- Startup ----------
 @app.on_event("startup")
@@ -852,110 +840,6 @@ async def serve_file(storage_path: str):
         media_type=rec.get("content_type", ctype),
         headers={"Cache-Control": "public, max-age=86400"},
     )
-
-# ---- Stripe donations ----
-_payments_col = db.payment_transactions
-
-@api.post("/public/donations/checkout")
-async def create_donation_checkout(payload: DonateCheckoutIn, request: Request):
-    if not STRIPE_API_KEY:
-        raise HTTPException(500, "Stripe not configured")
-    host_url = str(request.base_url)
-    webhook_url = f"{host_url.rstrip('/')}/api/webhook/stripe"
-    checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
-    origin = payload.origin_url.rstrip("/")
-    session_req = CheckoutSessionRequest(
-        amount=float(payload.amount),
-        currency="zar",
-        success_url=f"{origin}/donate/success?session_id={{CHECKOUT_SESSION_ID}}",
-        cancel_url=f"{origin}/donate?cancelled=1",
-        metadata={
-            "donor_name": payload.donor_name or "",
-            "email": payload.email or "",
-            "frequency": payload.frequency,
-        },
-    )
-    session = await checkout.create_checkout_session(session_req)
-    await _payments_col.insert_one({
-        "session_id": session.session_id,
-        "donor_name": payload.donor_name,
-        "email": payload.email,
-        "amount": float(payload.amount),
-        "currency": "ZAR",
-        "frequency": payload.frequency,
-        "status": "initiated",
-        "payment_status": "pending",
-        "created_at": now_iso(),
-        "updated_at": now_iso(),
-    })
-    return {"checkout_url": session.url, "session_id": session.session_id}
-
-@api.get("/public/donations/status/{session_id}")
-async def donation_status(session_id: str):
-    rec = await _payments_col.find_one({"session_id": session_id})
-    if not rec:
-        raise HTTPException(404, "Not found")
-    # Try to reconcile via Stripe if still pending
-    if rec.get("payment_status") != "paid":
-        try:
-            checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
-            status: CheckoutStatusResponse = await checkout.get_checkout_status(session_id)
-            if status.payment_status == "paid" or status.status == "complete":
-                await _payments_col.update_one(
-                    {"session_id": session_id, "payment_status": {"$ne": "paid"}},
-                    {"$set": {"status": "completed", "payment_status": "paid", "updated_at": now_iso()}},
-                )
-                # Mirror into donations collection for admin
-                await db.donations.insert_one({
-                    "donor_name": rec.get("donor_name") or "Stripe donor",
-                    "email": rec.get("email") or "",
-                    "amount": rec.get("amount", 0),
-                    "currency": rec.get("currency", "ZAR"),
-                    "frequency": rec.get("frequency", "one-time"),
-                    "message": "",
-                    "phone": None,
-                    "status": "paid",
-                    "session_id": session_id,
-                    "created_at": now_iso(),
-                })
-                rec = await _payments_col.find_one({"session_id": session_id})
-        except Exception as e:
-            logger.warning("Stripe reconcile failed: %s", e)
-    return {"session_id": rec["session_id"], "status": rec["status"], "payment_status": rec["payment_status"], "amount": rec.get("amount", 0)}
-
-@api.post("/webhook/stripe")
-async def stripe_webhook(request: Request):
-    if not STRIPE_API_KEY:
-        raise HTTPException(500, "Stripe not configured")
-    body = await request.body()
-    sig = request.headers.get("Stripe-Signature", "")
-    try:
-        checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
-        resp = await checkout.handle_webhook(body, sig)
-    except Exception as e:
-        logger.warning("Webhook error: %s", e)
-        raise HTTPException(400, "Invalid webhook")
-    if resp.session_id and resp.payment_status == "paid":
-        result = await _payments_col.update_one(
-            {"session_id": resp.session_id, "payment_status": {"$ne": "paid"}},
-            {"$set": {"status": "completed", "payment_status": "paid", "updated_at": now_iso()}},
-        )
-        if result.modified_count:
-            rec = await _payments_col.find_one({"session_id": resp.session_id})
-            if rec:
-                await db.donations.insert_one({
-                    "donor_name": rec.get("donor_name") or "Stripe donor",
-                    "email": rec.get("email") or (resp.metadata or {}).get("email", ""),
-                    "amount": rec.get("amount", 0),
-                    "currency": rec.get("currency", "ZAR"),
-                    "frequency": rec.get("frequency", "one-time"),
-                    "message": "",
-                    "phone": None,
-                    "status": "paid",
-                    "session_id": resp.session_id,
-                    "created_at": now_iso(),
-                })
-    return {"ok": True}
 
 app.include_router(api)
 

@@ -11,7 +11,6 @@ import StoriesPage from "@/pages/StoriesPage";
 import EventsPage from "@/pages/EventsPage";
 import GalleryPage from "@/pages/GalleryPage";
 import DonatePage from "@/pages/DonatePage";
-import DonateSuccessPage from "@/pages/DonateSuccessPage";
 import RegisterAthletePage from "@/pages/RegisterAthletePage";
 import VolunteerPage from "@/pages/VolunteerPage";
 import ContactPage from "@/pages/ContactPage";
@@ -38,7 +37,6 @@ function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/donate" element={<DonatePage />} />
-            <Route path="/donate/success" element={<DonateSuccessPage />} />
             <Route path="/register" element={<RegisterAthletePage />} />
             <Route path="/volunteer" element={<VolunteerPage />} />
             <Route path="/contact" element={<ContactPage />} />
