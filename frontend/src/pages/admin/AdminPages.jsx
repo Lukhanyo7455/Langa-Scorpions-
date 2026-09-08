@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api, API_BASE } from "@/lib/api";
@@ -228,8 +228,11 @@ function CmsPage({ title, endpoint, fields, initial, dataTestId, itemLabel }) {
   const [editId, setEditId] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const load = async () => { try { const { data } = await api.get(endpoint); setItems(data); } catch (err) { console.error(`Failed to load ${endpoint}:`, err); } };
-  useEffect(() => { load(); }, [endpoint]);
+  const load = useCallback(async () => {
+    try { const { data } = await api.get(endpoint); setItems(data); }
+    catch (err) { console.error(`Failed to load ${endpoint}:`, err); }
+  }, [endpoint]);
+  useEffect(() => { load(); }, [load]);
 
   const submit = async (e) => {
     e.preventDefault();
